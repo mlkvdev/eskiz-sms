@@ -1,6 +1,8 @@
 # eskiz-sms
 
-eskiz-sms package for eskiz.uz/sms 
+eskiz-sms package for eskiz.uz/sms
+
+Discussion group: https://t.me/+xFkMROBeFp45ZmQ0
 
 [![Downloads](https://pepy.tech/badge/eskiz-sms)](https://pepy.tech/project/eskiz-sms)
 [![Downloads](https://pepy.tech/badge/eskiz-sms/month)](https://pepy.tech/project/eskiz-sms)
@@ -63,3 +65,4 @@ async def main():
 
 asyncio.run(main())
 ```
+
