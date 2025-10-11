@@ -30,6 +30,10 @@ class TokenInvalid(EskizException):
     pass
 
 
+class TokenExpiredException(EskizException):
+    pass
+
+
 class ContactNotFound(EskizException):
     pass
 

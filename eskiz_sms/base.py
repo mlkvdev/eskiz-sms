@@ -1,5 +1,6 @@
 import re
-from typing import Optional, List
+from datetime import datetime
+from typing import Optional, List, Literal
 
 from eskiz_sms.request import Request
 from .exceptions import InvalidCallbackUrl
@@ -138,10 +139,51 @@ class EskizSMSBase(metaclass=Meta):
     def get_templates(self) -> Response:
         raise NotImplementedError
 
-    def totals(self, year: int) -> Response:
+    def totals(self, year: int, month: int) -> Response:
+        raise NotImplementedError
+
+    def nick_me(self):
+        raise NotImplementedError
+
+    def message_sms_normalizer(self):
+        """
+        Этот API предоставляет информацию о наличии специальных символов в SMS-сообщении, а также о том, какими символами можно заменить специальные символы.
+        Используя этот API, вы можете отправлять свои SMS дешевле.
+        """
         raise NotImplementedError
 
     def get_limit(self) -> Response:
+        raise NotImplementedError
+
+    def message_export(self, year: int, month: int, start: datetime, end: datetime,
+                       status: Literal["all", "delivered", "rejected"] = "all"):
+        raise NotImplementedError
+
+    def total_by_month(self, year: int):
+        raise NotImplementedError
+
+    def total_by_smsc(self, year: int, month: int, smsc_id: int):
+        """
+        :param year: Year
+        :param month: Month
+        :param smsc_id: ID компании
+            1 - Mobiuz;
+            2 - Beeline;
+            3 - Ucell;
+            4 - Humans;
+            5 - Uzmobile GSM;
+            6 - Uzmobile CDMA;
+            7 - Perfectum;
+            8 - Global
+        :return: Response
+        """
+        raise NotImplementedError
+
+    def logs_sms(self, sms_id: str):
+        """
+        :param sms_id: SMS ID
+        :return: Response
+        """
         raise NotImplementedError
 
 

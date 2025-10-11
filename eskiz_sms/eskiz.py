@@ -1,4 +1,5 @@
-from typing import Optional, List
+from datetime import datetime
+from typing import Optional, List, Literal
 
 from .base import EskizSMSBase
 from .exceptions import ContactNotFound
@@ -13,6 +14,8 @@ class EskizSMS(EskizSMSBase):
 
     def _user_data(self) -> Optional[User]:
         response = self._request.get("/auth/user")
+        if 'data' in response:
+            response = response['data']
         return User(**response)
 
     def add_contact(self, name: str, email: str, group: str, mobile_phone: str) -> ContactCreated:
@@ -139,13 +142,59 @@ class EskizSMS(EskizSMSBase):
     def get_templates(self) -> Response:
         return Response(**self._request.get("/template"))
 
-    def totals(self, year: int) -> Response:
+    def totals(self, year: int, month: int) -> Response:
         return Response(**self._request.post(
             "/user/totals",
             payload={
                 "year": year,
-                "user_id": self.user.id
+                "month": month,
             }))
+
+    def nick_me(self):
+        response = self._request.get("/nick/me")
+        print(response)
+        return Response(**response)
+
+    def message_sms_normalizer(self):
+        response = self._request.post("/message/sms/normalizer")
+        return Response(data=response)
 
     def get_limit(self) -> Response:
         return Response(**self._request.get("/user/get-limit"))
+
+    def message_export(self, year: int, month: int, start: datetime, end: datetime,
+                       status: Literal["all", "delivered", "rejected"] = "all"):
+        date_format = "%Y-%m-%d %H:%M:%S"
+        response = self._request.post(
+            "/message/export",
+            payload={
+                "year": year,
+                "month": month,
+                "start": start.strftime(date_format),
+                "end": end.strftime(date_format),
+            },
+            params={"status": status}
+        )
+        return response
+
+    def total_by_month(self, year: int):
+        response = self._request.get(
+            "/report/total-by-month",
+            params={"year": year}
+        )
+        return Response(**response)
+
+    def total_by_smsc(self, year: int, month: int, smsc_id: int):
+        response = self._request.post(
+            "/report/total-by-smsc",
+            payload={
+                "year": year,
+                "month": month,
+                "smsc_id": smsc_id
+            }
+        )
+        return Response(**response)
+
+    def logs_sms(self, sms_id: str):
+        response = self._request.get(f"/logs/sms/{sms_id}", )
+        return Response(**response)

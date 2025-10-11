@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from datetime import datetime
+from typing import List, Optional, Literal
 
 from .base import EskizSMSBase
 from .exceptions import ContactNotFound
@@ -17,6 +18,8 @@ class EskizSMS(EskizSMSBase, async_=True):
 
     async def _user_data(self) -> Optional[User]:
         response = await self._request.get("/auth/user")
+        if 'data' in response:
+            response = response['data']
         return User(**response)
 
     async def add_contact(self, name: str, email: str, group: str, mobile_phone: str) -> ContactCreated:
@@ -156,16 +159,59 @@ class EskizSMS(EskizSMSBase, async_=True):
         response = await self._request.get("/template")
         return Response(**response)
 
-    async def totals(self, year: int) -> Response:
-        user = await self.user
+    async def totals(self, year: int, month: int) -> Response:
         response = await self._request.post(
             "/user/totals",
             payload={
                 "year": year,
-                "user_id": user.id
+                "month": month,
             })
         return Response(**response)
 
+    async def nick_me(self):
+        response = await self._request.get("/nick/me")
+        return Response(data=response)
+
+    async def message_sms_normalizer(self):
+        response = await self._request.get("/message/sms/normalizer")
+        return Response(data=response)
+
     async def get_limit(self) -> Response:
         response = await self._request.get("/user/get-limit")
+        return Response(**response)
+
+    async def message_export(self, year: int, month: int, start: datetime, end: datetime,
+                             status: Literal["all", "delivered", "rejected"] = "all"):
+        response = await self._request.post(
+            "/message/export",
+            payload={
+                "year": year,
+                "month": month,
+                "start": start,
+                "end": end,
+            },
+            params={"status": status}
+        )
+        return Response(data=response)
+
+    async def total_by_month(self, year: int):
+        response = await self._request.get(
+            "/report/total-by-month",
+            params={"year": year}
+        )
+        return Response(**response)
+
+    async def total_by_smsc(self, year: int, month: int, smsc_id: int):
+        response = await self._request.post(
+            "/report/total-by-smsc",
+            payload={
+                "year": year,
+                "month": month,
+                "smsc_id": smsc_id
+            }
+        )
+        return Response(**response)
+
+    async def logs_sms(self, sms_id: str):
+        response = await self._request.get(f"/logs/sms/{sms_id}", )
         return Response(**response)

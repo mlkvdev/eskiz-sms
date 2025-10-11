@@ -7,28 +7,23 @@ from typing import Union, Optional
 class Response:
     id: Optional[str] = None
     status: Optional[str] = None
-    data: Optional[Union[dict, list]] = None
+    data: Optional[Union[dict, list, str]] = None
     message: Optional[Union[str, dict]] = None
 
 
 @dataclass
 class User:
     id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     name: Optional[str] = None
     email: Optional[str] = None
+    password: Optional[str] = None
     role: Optional[str] = None
     api_token: Optional[str] = None
     status: Optional[str] = None
-    sms_api_login: Optional[str] = None
-    sms_api_password: Optional[str] = None
-    uz_price: Optional[int] = None
-    ucell_price: Optional[int] = None
-    test_ucell_price: Optional[int] = None
-    balance: Optional[int] = None
     is_vip: Optional[bool] = None
-    host: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    balance: Optional[int] = None
 
 
 @dataclass

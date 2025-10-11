@@ -6,5 +6,5 @@ class Status(str, Enum):
 
 
 class Message(str, Enum):
-    EXPIRED_TOKEN = "Expired token"
+    EXPIRED_TOKEN = "Expired"
     INVALID_CREDENTIALS = "Неверный Email или пароль"
