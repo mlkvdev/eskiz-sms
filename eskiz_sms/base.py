@@ -127,7 +127,7 @@ class EskizSMSBase(metaclass=Meta):
     def get_dispatch_status(self, dispatch_id: int) -> Response:
         raise NotImplementedError
 
-    def create_template(self, name: str, text: str) -> Response:
+    def create_template(self, text: str) -> Response:
         raise NotImplementedError
 
     def update_template(self, template_id: int, name: str, text: str) -> Response:

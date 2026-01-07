@@ -6,8 +6,10 @@ from typing import Union, Optional
 @dataclass
 class Response:
     id: Optional[str] = None
+    success: Optional[bool] = None
     status: Optional[str] = None
     data: Optional[Union[dict, list, str]] = None
+    result: Optional[Union[dict, list, str]] = None
     message: Optional[Union[str, dict]] = None
 
 

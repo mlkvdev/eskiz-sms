@@ -39,6 +39,7 @@ class EskizSMS(EskizSMSBase):
             })
         if response and isinstance(response, list):
             return Contact(**response[0])
+        return None
 
     def get_contact(self, contact_id: int, raise_exception=False) -> Optional[Contact]:
         response = self._request.get(f"/contact/{contact_id}")
@@ -119,28 +120,15 @@ class EskizSMS(EskizSMSBase):
                 "user_id": self.user.id
             }))
 
-    def create_template(self, name: str, text: str) -> Response:
+    def create_template(self, text: str) -> Response:
         return Response(**self._request.post(
-            "/template",
+            "/user/template",
             payload={
-                "name": name,
-                "text": text,
+                "template": text,
             }))
 
-    def update_template(self, template_id: int, name: str, text: str) -> Response:
-        return Response(**self._request.put(
-            f"/template/{template_id}",
-            payload={
-                "name": name,
-                "text": text,
-            }
-        ))
-
-    def get_template(self, template_id: int) -> Response:
-        return Response(**self._request.get(f"/template/{template_id}"))
-
     def get_templates(self) -> Response:
-        return Response(**self._request.get("/template"))
+        return Response(**self._request.get("/user/templates"))
 
     def totals(self, year: int, month: int) -> Response:
         return Response(**self._request.post(
@@ -150,10 +138,11 @@ class EskizSMS(EskizSMSBase):
                 "month": month,
             }))
 
-    def nick_me(self):
+    def nick_me(self) -> Optional[Response]:
         response = self._request.get("/nick/me")
-        print(response)
-        return Response(**response)
+        if response:
+            return Response(**response)
+        return None
 
     def message_sms_normalizer(self):
         response = self._request.post("/message/sms/normalizer")
