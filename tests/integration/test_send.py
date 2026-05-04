@@ -2,32 +2,46 @@
 
 Doubly gated: ``--run-integration`` is required to collect, and the
 ``test_phone`` fixture skips unless ``ESKIZ_TEST_PHONE`` is set in the
-environment. The body uses Eskiz's standard test template so unverified
-accounts can still send.
+environment.
+
+Eskiz moderates SMS bodies per-account. If the default ``Eskiz Test`` text
+hasn't been approved on this account, the test will skip with guidance —
+set ``ESKIZ_TEST_BODY`` to a body you've approved via my.eskiz.uz.
 """
 
 from __future__ import annotations
 
+import os
 import time
 
 import pytest
 
 from eskiz import EskizSMS
+from eskiz.exceptions import BadRequest
 from eskiz.models import SendResult, SmsStatusDetail
 
 pytestmark = pytest.mark.integration
 
-# Eskiz test sender + body that is always allowed without template approval.
 TEST_FROM = "4546"
-TEST_BODY = "Bu Eskiz dan test"
+DEFAULT_BODY = "Eskiz Test"
 
 
 def test_send_and_status_roundtrip(live_client: EskizSMS, test_phone: str) -> None:
-    result = live_client.sms.send(
-        mobile_phone=test_phone,
-        message=TEST_BODY,
-        from_whom=TEST_FROM,
-    )
+    body = os.environ.get("ESKIZ_TEST_BODY", DEFAULT_BODY)
+
+    try:
+        result = live_client.sms.send(
+            mobile_phone=test_phone,
+            message=body,
+            from_whom=TEST_FROM,
+        )
+    except BadRequest as exc:
+        if "модерац" in str(exc).lower() or "moderation" in str(exc).lower():
+            pytest.skip(
+                f"Body {body!r} is not pre-approved on this account; "
+                "set ESKIZ_TEST_BODY to an approved template."
+            )
+        raise
 
     assert isinstance(result, SendResult)
     assert result.id is not None

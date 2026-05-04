@@ -71,8 +71,21 @@ class PriceEntry(_Base):
     price: int | float
 
 
+class LocalPriceEntry(_Base):
+    """One SMSC entry in the local pricing list.
+
+    Local rows have a different shape than global ones — they are keyed by
+    SMSC id and carry both regular and ad-rate prices.
+    """
+
+    smsc_id: int
+    name: str
+    price: int | float
+    ad_price: int | float | None = None
+
+
 class PriceList(_Base):
     """``/user/prices`` response."""
 
     global_: list[PriceEntry] | None = Field(default=None, alias="global")
-    local: list[PriceEntry] | None = None
+    local: list[LocalPriceEntry] | None = None

@@ -8,6 +8,7 @@ from eskiz.models.common import EnvelopeStatus, ResponseEnvelope
 from eskiz.models.reports import (
     DispatchExpense,
     LimitInfo,
+    LocalPriceEntry,
     PriceEntry,
     PriceList,
     RangeExpense,
@@ -42,6 +43,7 @@ __all__ = [
     "DispatchStatusRow",
     "EnvelopeStatus",
     "LimitInfo",
+    "LocalPriceEntry",
     "NormalizerCharacter",
     "PaginatedMessages",
     "PriceEntry",

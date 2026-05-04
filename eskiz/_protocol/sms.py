@@ -198,7 +198,7 @@ def normalize(message: str) -> RequestPlan[list[NormalizerCharacter]]:
 
 def check(message: str) -> RequestPlan[SmsCheckResult]:
     return RequestPlan(
-        method="GET",
+        method="POST",
         path=ep.SMS_CHECK,
         json={"message": message},
         parse=lambda r: SmsCheckResult.model_validate(envelope_data(r.data)),

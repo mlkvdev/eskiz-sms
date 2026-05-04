@@ -260,7 +260,8 @@ pytest --run-integration tests/integration/test_readonly.py tests/integration/te
 ```
 
 Run the live send test as well — set `ESKIZ_TEST_PHONE` to a number you
-control:
+control. Eskiz moderates SMS bodies per-account; if the default `Eskiz Test`
+body isn't approved on yours, set `ESKIZ_TEST_BODY` to one that is:
 
 ```bash
 ESKIZ_TEST_PHONE=998901234567 pytest --run-integration tests/integration
