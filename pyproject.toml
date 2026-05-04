@@ -51,6 +51,15 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["eskiz"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "/eskiz",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/License",
+    "/pyproject.toml",
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
