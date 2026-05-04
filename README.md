@@ -240,6 +240,32 @@ Other notable changes:
   exposed — they were not in the official Postman collection.
 - `client.token.set(...)` removed; use a custom `TokenStorage` instead.
 
+## Integration tests
+
+The unit suite uses `respx` to mock the HTTP layer. A separate, opt-in
+integration suite under `tests/integration/` exercises the SDK against the
+real Eskiz API. It is skipped by default — pass `--run-integration` to run it.
+
+Set credentials in `.env.integration` (see `.env.integration.example`):
+
+```bash
+cp .env.integration.example .env.integration
+# fill in ESKIZ_EMAIL / ESKIZ_PASSWORD
+```
+
+Run only the read-only smokes (no SMS sent, no credits used):
+
+```bash
+pytest --run-integration tests/integration/test_readonly.py tests/integration/test_async.py
+```
+
+Run the live send test as well — set `ESKIZ_TEST_PHONE` to a number you
+control:
+
+```bash
+ESKIZ_TEST_PHONE=998901234567 pytest --run-integration tests/integration
+```
+
 ## License
 
 MIT

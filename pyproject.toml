@@ -83,3 +83,6 @@ include = ["eskiz", "tests"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = [
+    "integration: hits the real Eskiz API; opt-in via --run-integration",
+]
