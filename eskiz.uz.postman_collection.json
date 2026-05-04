@@ -1,0 +1,2056 @@
+{
+  "info": {
+    "_postman_id": "a7ee11d4-f6ea-4dc6-93d7-135dde184cb0",
+    "name": "СМС шлюз от Eskiz.uz",
+    "description": "Отправляйте СМС по всему миру, в любом количестве!\n\nВ тестовом статусе для отправки тестовых смс сообщений, Вы можете использовать только нижеуказанные тексты:\n\n- Это тест от Eskiz\n    \n- Bu Eskiz dan test\n    \n- This is test from Eskiz",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25063328"
+  },
+  "item": [
+    {
+      "name": "Авторизация",
+      "item": [
+        {
+          "name": "Получить токен",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "type": "text",
+                  "value": "vash@email.uz"
+                },
+                {
+                  "key": "password",
+                  "type": "text",
+                  "value": "vash_sekretniy_kod_s_kabineta"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/auth/login",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Для авторизации используйте этот API, возвращает токен"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "email",
+                      "type": "text",
+                      "value": "vash@email.uz"
+                    },
+                    {
+                      "key": "password",
+                      "type": "text",
+                      "value": "vash_sekretniy_kod_s_kabineta"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/auth/login",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"message\": \"token_generated\",\r\n    \"data\": {\r\n        \"token\": \"Ваш токен\"\r\n    },\r\n    \"token_type\": \"bearer\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Обновить токен",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/auth/refresh",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Обновляет текущий токен"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/auth/refresh",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "refresh"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"message\": \"token_generated\",\r\n    \"data\": {\r\n        \"token\": \"Новый токен\"\r\n    },\r\n    \"token_type\": \"bearer\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Данные ползователья",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/auth/user",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "user"
+              ]
+            },
+            "description": "Возвращает все данные о пользователе"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/auth/user",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "user"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"status\": \"success\",\r\n    \"data\": {\r\n        \"id\": 378,\r\n        \"created_at\": \"2020-10-14T18:27:03Z\",\r\n        \"updated_at\": \"2023-11-03T20:09:31.527361Z\",\r\n        \"name\": \"Name\",\r\n        \"email\": \"vash@email.uz\",\r\n        \"password\": \"\",\r\n        \"role\": \"user\",\r\n        \"status\": \"active\",\r\n        \"is_vip\": false,\r\n        \"balance\": 0\r\n    },\r\n    \"id\": null\r\n}"
+            }
+          ]
+        }
+      ],
+      "description": "**Срок токена** - 30 дней\n\nЕсли Вы новый пользователь, пройдите регистрацию по [https://eskiz.uz/sms](https://eskiz.uz/sms) и получите логин и пароль, если же у Вас есть свой логин и пароль, то используйте его",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Шаблоны",
+      "item": [
+        {
+          "name": "Отправить шаблон",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "template",
+                  "value": "",
+                  "description": "шаблон или текс сообщение",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/user/template",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "user",
+                "template"
+              ]
+            },
+            "description": "Получить шаблон по ID"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}"
+                  }
+                ],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/user/template",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    "template"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"template\": \"шаблон или текс сообщение\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить список шаблонов",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}"
+              }
+            ],
+            "url": {
+              "raw": "notify.eskiz.uz/api/user/templates",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "user",
+                "templates"
+              ]
+            },
+            "description": "Получить все шаблоны\n\nstatus:  \nmoderation => На модерации  \ninproccess => В процессе  \nservice => Сервисный  \nreklama => Рекламный  \nrejected => Отказано"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}"
+                  }
+                ],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/user/templates",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    "templates"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"result\": [\r\n        {\r\n            \"id\": 1,\r\n            \"template\": \"\",\r\n            \"original_text\": \"Eskiz API test 2\",\r\n            \"status\": \"moderation\"\r\n        }, \r\n        ...\r\n    ]\r\n}"
+            }
+          ]
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Отправка",
+      "item": [
+        {
+          "name": "Отправить СМС",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{vash_token_zdes}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "description": "Номер телефона",
+                  "key": "mobile_phone",
+                  "type": "text",
+                  "value": "998991234567"
+                },
+                {
+                  "description": "Сообщение",
+                  "key": "message",
+                  "type": "text",
+                  "value": "Eskiz Test"
+                },
+                {
+                  "description": "Для того, чтобы использовать никнейм, вам нужно поменять 4546 на свои.",
+                  "key": "from",
+                  "type": "text",
+                  "value": "4546"
+                },
+                {
+                  "key": "callback_url",
+                  "value": "",
+                  "description": "Это необязательное поле, которое используется для автоматического\nполучения смс-статуса с сервера. Укажите URL-адрес обратного вызова, по\nкоторому вы будете получать данные POST в следующем формате:\n`{\"request_id\": \"UUID\", \"message_id\": \"4385062\", \"user_sms_id\": \"vash_ID_zdes\", \"country\": \"UZ\", \"phone_number\": \"998991234567\", \"sms_count\": \"1\", \"status\" : \"DELIVRD\", \"status_date\": \"2021-04-02 00:39:36\"}`. \n\nrequest_id — это значение, возвращаемое в поле \"id\" в результате выполнения API запросов send, send-batch и send-global.",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/send",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "send"
+              ]
+            },
+            "description": "Для того, чтобы использовать никнейм, вам нужно поменять поле «FROM» на свои.\n\n**callback_url** - Это необязательное поле, которое используется для автоматического получения смс-статуса с сервера. Укажите URL-адрес обратного вызова, по которому вы будете получать данные POST в следующем формате:\n\n**{\"request_id\": \"UUID\", \"message_id\": \"4385062\", \"user_sms_id\": \"vash_ID_zdes\", \"country\": \"UZ\", \"phone_number\": \"998991234567\", \"sms_count\": \"1\", \"status\" : \"DELIVRD\", \"status_date\": \"2021-04-02 00:39:36\"}**\n\n`request_id` — это значение, возвращаемое в поле \"id\" в результате выполнения API запросов send, send-batch и send-global."
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "type": "text",
+                    "value": "Bearer {vash_token_zdes}",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "mobile_phone",
+                      "type": "text",
+                      "value": "99899012345678"
+                    },
+                    {
+                      "key": "message",
+                      "type": "text",
+                      "value": "Eskiz Test"
+                    },
+                    {
+                      "key": "from",
+                      "type": "text",
+                      "value": "4546"
+                    },
+                    {
+                      "key": "callback_url",
+                      "value": "http://0000.uz/test.php",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/send",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "send"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"id\": \"59bf10a2-aba8-4694-8fd5-0be20102a580\",\r\n    \"message\": \"Waiting for SMS provider\",\r\n    \"status\": \"waiting\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Отправить СМС рассылка",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{vash_token_zdes}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"messages\": [\r\n        {\"user_sms_id\":\"sms1\",\"to\": 998990000000, \"text\": \"eto test\"},\r\n        {\"user_sms_id\":\"sms2\",\"to\": 998980000000, \"text\": \"eto test 2\"}\r\n    ],\r\n    \"from\": \"4546\",\r\n    \"dispatch_id\": 123,\r\n    \"callback_url\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/send-batch",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "send-batch"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"messages\": [\r\n        {\"user_sms_id\":\"sms1\",\"to\": 998990000000, \"text\": \"eto test\"},\r\n        {\"user_sms_id\":\"sms2\",\"to\": 998980000000, \"text\": \"eto test 2\"}\r\n    ],\r\n    \"from\": \"4546\",\r\n    \"dispatch_id\": 123\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/send-batch",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "send-batch"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"id\": \"03759b6d-c4db-449f-81c1-f625ab1bc1b4\",\r\n    \"message\": \"Waiting for SMS provider\",\r\n    \"status\": [\r\n        \"waiting\",\r\n        \"waiting\"\r\n    ]\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Отправить Международный СМС",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{vash_token_zdes}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "description": "Номер телефона",
+                  "key": "mobile_phone",
+                  "type": "text",
+                  "value": "1234567891011"
+                },
+                {
+                  "description": "Сообщение",
+                  "key": "message",
+                  "type": "text",
+                  "value": "Тест начинается"
+                },
+                {
+                  "description": "Страна",
+                  "key": "country_code",
+                  "type": "text",
+                  "value": "US"
+                },
+                {
+                  "key": "callback_url",
+                  "value": "",
+                  "description": "Это необязательное поле, которое используется для автоматического\nполучения смс-статуса с сервера. Укажите URL-адрес обратного вызова, по\nкоторому вы будете получать данные POST в следующем формате:\n`{\"request_id\": \"UUID\", \"message_id\": \"4385062\", \"user_sms_id\": \"vash_ID_zdes\", \"country\": \"UZ\", \"phone_number\": \"998991234567\", \"sms_count\": \"1\", \"status\" : \"DELIVRD\", \"status_date\": \"2021-04-02 00:39:36\"}`\n\nrequest_id — это значение, возвращаемое в поле \"id\" в результате выполнения API запросов send, send-batch и send-global.",
+                  "type": "text"
+                },
+                {
+                  "key": "unicode",
+                  "value": "0",
+                  "description": "1 - если хотите отправить на кирилице",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/send-global",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "send-global"
+              ]
+            },
+            "description": "Используя этот API вы можете отправить СМС зарубежных стран мира.\n\n**callback_url** - Это необязательное поле, которое используется для автоматического получения смс-статуса с сервера. Укажите URL-адрес обратного вызова, по которому вы будете получать данные POST в следующем формате: \n\n**{\"message_id\": \"4385062\", \"country\": \"US\", \"phone_number\": \"1234567891011\", \"sms_count\": \"1\", \"status\" : \"DELIVRD\", \"status_date\": \"2021-04-02 00:39:36\"}**"
+          },
+          "response": []
+        },
+        {
+          "name": "Детализация",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "start_date",
+                  "value": "2023-11-01 00:00",
+                  "description": "С `%Y-%m-%d %H:%M`",
+                  "type": "text"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2023-11-02 23:59",
+                  "description": "По `%Y-%m-%d %H:%M`",
+                  "type": "text"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20",
+                  "description": "Количество SMS сообщений (с 20 до 200)",
+                  "type": "text"
+                },
+                {
+                  "key": "count",
+                  "value": "0",
+                  "description": "1 - Если необходимо получить итог по статусу",
+                  "type": "text"
+                },
+                {
+                  "key": "is_ad",
+                  "value": "",
+                  "description": "[пустой] - все\n1 - только рекламное\n0 - только сервисное",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/get-user-messages?status",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "get-user-messages"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "[пустой] - все\n\"delivered\" - только частично и полностью доставленное\n\"rejected\" - только не доставленное "
+                }
+              ]
+            },
+            "description": "**id** - Идентификатор пользователя  \n**country_id** - Идентификатор страны, куда отправлено SMS (null - Узбекистан)  \n**smsc_id** - Идентификатор компании, отправившей SMS  \n**dispatch_id** - Идентификатор рассылки  \n**user_sms_id** - Идентификатор SMS, который отправил пользователь  \n**request_id** - Идентификатор запроса, по которому было отправлено SMS  \n**price** - Цена за каждую часть SMS (полная стоимость SMS вычисляется как price \\* parts_count)  \n**is_ad** - Рекламное SMS  \n**nick** - Никнейм  \n**to** - Номер телефона, на который отправлено SMS  \n**message** - Текст SMS  \n**encoding** - Способ кодирования SMS (0 - GSM 0338, 1 - ASCII, 8 - UCS2)  \n**parts_count** - Количество частей SMS (зависит от типа кодировки)  \n**parts**: - Информация о частях SMS\n\n- **\\[MSG_ID\\]**: Идентификатор SMS, полученный от компании\n    \n    - **part_index** - Порядковый номер каждой части SMS\n        \n    - **accepted** - true или false\n        \n    - **accept_time** - Время отправки SMS\n        \n    - **accept_status** - Состояние SMS, полученной от компании (значение SubmitSMResp.CommandStatus)\n        \n    - **dlr_state** - Статус доставленного SMS\n        \n    - **dlr_time** - Время доставки SMS\n        \n\n**status** - Общее состояние SMS  \n**smsc_data** - Изменение состояния для каждой части  \n**sent_at** - Время, когда система Eskiz.uz приняла SMS  \n**submit_sm_resp_at** - Время отправки последней части SMS компании  \n**delivery_sm_at** - Время доставки последней части SMS пользователю  \n**created_at** - Дата создания записи  \n**updated_at** - Дата последнего изменения записи"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "start_date",
+                      "value": "2023-11-01 00:00",
+                      "description": "С `%Y-%m-%d %H:%M`",
+                      "type": "text"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2023-11-02 23:59",
+                      "description": "По `%Y-%m-%d %H:%M`",
+                      "type": "text"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "20",
+                      "description": "Количество SMS сообщений (с 20 до 200)",
+                      "type": "text"
+                    },
+                    {
+                      "key": "count",
+                      "value": "0",
+                      "description": "1 - Если необходимо получить итог по статусу",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/get-user-messages",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "get-user-messages"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"data\": {\r\n        \"current_page\": 1,\r\n        \"path\": \"https://notify.eskiz.uz/api/message/sms/get-user-messages\",\r\n        \"prev_page_url\": null,\r\n        \"first_page_url\": \"https://notify.eskiz.uz/api/message/sms/get-user-messages?page=1\",\r\n        \"last_page_url\": \"https://notify.eskiz.uz/api/message/sms/get-user-messages?page=1\",\r\n        \"next_page_url\": null,\r\n        \"per_page\": 20,\r\n        \"last_page\": 1,\r\n        \"from\": 1,\r\n        \"to\": 20,\r\n        \"total\": 4,\r\n        \"result\": [\r\n            {\r\n                \"id\": 16,\r\n                \"user_id\": 378,\r\n                \"country_id\": null,\r\n                \"connection_id\": 1,\r\n                \"smsc_id\": 1,\r\n                \"dispatch_id\": null,\r\n                \"user_sms_id\": \"hiha124\",\r\n                \"request_id\": \"7fc5c514-aa30-4adc-9b80-2956d612fb4c\",\r\n                \"price\": 50,\r\n                \"is_ad\": true,\r\n                \"nick\": \"4546\",\r\n                \"to\": \"Номер телефона\",\r\n                \"message\": \"Eskiz test\",\r\n                \"encoding\": 1,\r\n                \"parts_count\": 1,\r\n                \"parts\": {\r\n                    \"[MSG_ID]\": {\r\n                        \"accept\": \"2023-11-02T00:40:34.606121+05:00\",\r\n                        \"status\": \"DELIVRD\",\r\n                        \"submit\": 0,\r\n                        \"delivery\": \"2023-11-02T00:40:38.619241+05:00\"\r\n                    }\r\n                },\r\n                \"status\": \"DELIVERED\",\r\n                \"smsc_data\": {\r\n                    \"[MSG_ID]\": [\r\n                        \"DELIVRD\"\r\n                    ]\r\n                },\r\n                \"sent_at\": \"2023-11-02T00:40:32Z\",\r\n                \"submit_sm_resp_at\": \"2023-11-02T00:40:34.606121Z\",\r\n                \"delivery_sm_at\": \"2023-11-02T00:40:38.619241Z\",\r\n                \"created_at\": \"2023-11-02T00:40:34.563038Z\",\r\n                \"updated_at\": \"2023-11-02T00:40:40.566277Z\"\r\n            }\r\n        ],\r\n        \"links\": [\r\n            {\r\n                \"url\": null,\r\n                \"label\": \"&laquo; Previous\",\r\n                \"active\": false\r\n            },\r\n            {\r\n                \"url\": \"https://notify.eskiz.uz/api/message/sms/get-user-messages?page=1\",\r\n                \"label\": \"1\",\r\n                \"active\": true\r\n            },\r\n            {\r\n                \"url\": null,\r\n                \"label\": \"Next &raquo;\",\r\n                \"active\": false\r\n            }\r\n        ]\r\n    },\r\n    \"status\": \"success\"\r\n}"
+            },
+            {
+              "name": "итого",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "start_date",
+                      "value": "2023-11-01 00:00",
+                      "description": "С `%Y-%m-%d %H:%M`",
+                      "type": "text"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2023-11-02 23:59",
+                      "description": "По `%Y-%m-%d %H:%M`",
+                      "type": "text"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "20",
+                      "description": "Количество SMS сообщений (с 20 до 200)",
+                      "type": "text"
+                    },
+                    {
+                      "key": "count",
+                      "value": "1",
+                      "description": "1 - Если необходимо получить итог по статусу",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/get-user-messages",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "get-user-messages"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"status\": \"success\",\r\n    \"data\": [\r\n        {\r\n            \"status\": \"DELIVERED\",\r\n            \"total\": 4\r\n        }\r\n    ],\r\n    \"id\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить СМС по рассылке",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "description": "ID рассылки",
+                  "key": "dispatch_id",
+                  "type": "text",
+                  "value": "123"
+                },
+                {
+                  "key": "count",
+                  "value": "0",
+                  "description": "1 - Если необходимо получить итог по статусу",
+                  "type": "text"
+                },
+                {
+                  "key": "is_ad",
+                  "value": "",
+                  "description": "[пустой] - все\n1 - только рекламное\n0 - только сервисное",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/get-user-messages-by-dispatch?status&page-size",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "get-user-messages-by-dispatch"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "[пустой] - все\n\"delivered\" - только частично и полностью доставленное\n\"rejected\" - только не доставленное "
+                },
+                {
+                  "key": "page-size",
+                  "value": "",
+                  "description": "Количество элементов, возвращаемых в одном запросе. Допустимый диапазон значений — от 20 до 1000.\n"
+                }
+              ]
+            },
+            "description": "Получить все отправленные СМС по ID рассылке"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": "ID рассылки",
+                      "key": "dispatch_id",
+                      "type": "text",
+                      "value": "123"
+                    },
+                    {
+                      "description": "1 - Если необходимо получить итог по статусу",
+                      "key": "count",
+                      "type": "text",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/get-user-messages-by-dispatch",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "get-user-messages-by-dispatch"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"result\": \"Одинокий с детализацией\"\r\n}\r\n"
+            }
+          ]
+        },
+        {
+          "name": "Статус рассылки",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "ID пользователя",
+                  "type": "text"
+                },
+                {
+                  "key": "dispatch_id",
+                  "value": "123",
+                  "description": "ID рассылки",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/get-dispatch-status",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "get-dispatch-status"
+              ]
+            },
+            "description": "Получить статус рассылки"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "dispatch_id",
+                      "value": "123",
+                      "description": "ID рассылки",
+                      "type": "text"
+                    },
+                    {
+                      "key": "is_global",
+                      "value": "0",
+                      "description": "1 - Если нужно получить итог по международным SMS",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/get-dispatch-status",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "get-dispatch-status"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"status\": \"success\",\r\n    \"data\": [\r\n        {\r\n            \"status\": \"DELIVERED\",\r\n            \"total\": 18\r\n        }\r\n    ],\r\n    \"id\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить список ник",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{vash_token_zdes}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://notify.eskiz.uz/api/nick/me",
+              "protocol": "https",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "nick",
+                "me"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://notify.eskiz.uz/api/nick/me",
+                  "protocol": "https",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "nick",
+                    "me"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "[\r\n    \"Eskiz.uz\"\r\n]"
+            }
+          ]
+        },
+        {
+          "name": "Нормализации SMS",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "message",
+                  "value": "",
+                  "description": "Сообщение",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://notify.eskiz.uz/api/message/sms/normalizer",
+              "protocol": "https",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "normalizer"
+              ]
+            },
+            "description": "Этот API предоставляет информацию о наличии специальных символов в SMS-сообщении, а также о том, какими символами можно заменить специальные символы.\n\nИспользуя этот API, вы можете отправлять свои SMS дешевле."
+          },
+          "response": [
+            {
+              "name": "Нормализации SMS",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "message",
+                      "value": "Sms xabar narxi €100 | Xitoy tili 世界 | Ѕɑӏоｍ Éśķíź | Привет Ескиз",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "https://notify.eskiz.uz/api/message/sms/normalizer",
+                  "protocol": "https",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "normalizer"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"special_characters\": [\n        {\n            \"position\": 16,\n            \"code\": \"0x20AC\",\n            \"char\": \"€\"\n        },\n        {\n            \"position\": 23,\n            \"code\": \"0x7C\",\n            \"char\": \"|\"\n        },\n        {\n            \"position\": 36,\n            \"code\": \"0x4E16\",\n            \"char\": \"世\"\n        },\n        {\n            \"position\": 39,\n            \"code\": \"0x754C\",\n            \"char\": \"界\"\n        },\n        {\n            \"position\": 43,\n            \"code\": \"0x7C\",\n            \"char\": \"|\"\n        },\n        {\n            \"position\": 45,\n            \"code\": \"0x405\",\n            \"char\": \"Ѕ\"\n        },\n        {\n            \"position\": 47,\n            \"code\": \"0x251\",\n            \"char\": \"ɑ\"\n        },\n        {\n            \"position\": 49,\n            \"code\": \"0x4CF\",\n            \"char\": \"ӏ\"\n        },\n        {\n            \"position\": 51,\n            \"code\": \"0x43E\",\n            \"char\": \"о\"\n        },\n        {\n            \"position\": 53,\n            \"code\": \"0xFF4D\",\n            \"char\": \"ｍ\"\n        },\n        {\n            \"position\": 57,\n            \"code\": \"0xC9\",\n            \"char\": \"É\"\n        },\n        {\n            \"position\": 59,\n            \"code\": \"0x15B\",\n            \"char\": \"ś\"\n        },\n        {\n            \"position\": 61,\n            \"code\": \"0x137\",\n            \"char\": \"ķ\"\n        },\n        {\n            \"position\": 63,\n            \"code\": \"0xED\",\n            \"char\": \"í\"\n        },\n        {\n            \"position\": 65,\n            \"code\": \"0x17A\",\n            \"char\": \"ź\"\n        },\n        {\n            \"position\": 68,\n            \"code\": \"0x7C\",\n            \"char\": \"|\"\n        },\n        {\n            \"position\": 70,\n            \"code\": \"0x41F\",\n            \"char\": \"П\"\n        },\n        {\n            \"position\": 72,\n            \"code\": \"0x440\",\n            \"char\": \"р\"\n        },\n        {\n            \"position\": 74,\n            \"code\": \"0x438\",\n            \"char\": \"и\"\n        },\n        {\n            \"position\": 76,\n            \"code\": \"0x432\",\n            \"char\": \"в\"\n        },\n        {\n            \"position\": 78,\n            \"code\": \"0x435\",\n            \"char\": \"е\"\n        },\n        {\n            \"position\": 80,\n            \"code\": \"0x442\",\n            \"char\": \"т\"\n        },\n        {\n            \"position\": 83,\n            \"code\": \"0x415\",\n            \"char\": \"Е\"\n        },\n        {\n            \"position\": 85,\n            \"code\": \"0x441\",\n            \"char\": \"с\"\n        },\n        {\n            \"position\": 87,\n            \"code\": \"0x43A\",\n            \"char\": \"к\"\n        },\n        {\n            \"position\": 89,\n            \"code\": \"0x438\",\n            \"char\": \"и\"\n        },\n        {\n            \"position\": 91,\n            \"code\": \"0x437\",\n            \"char\": \"з\"\n        }\n    ],\n    \"recommendations\": [\n        {\n            \"from\": \"€\",\n            \"to\": \"EU\"\n        },\n        {\n            \"from\": \"|\",\n            \"to\": \":\"\n        },\n        {\n            \"from\": \"世\",\n            \"to\": \"Shi \"\n        },\n        {\n            \"from\": \"界\",\n            \"to\": \"Jie \"\n        },\n        {\n            \"from\": \"|\",\n            \"to\": \":\"\n        },\n        {\n            \"from\": \"Ѕ\",\n            \"to\": \"Dz\"\n        },\n        {\n            \"from\": \"ɑ\",\n            \"to\": \"a\"\n        },\n        {\n            \"from\": \"ӏ\",\n            \"to\": \"[?]\"\n        },\n        {\n            \"from\": \"о\",\n            \"to\": \"o\"\n        },\n        {\n            \"from\": \"ｍ\",\n            \"to\": \"m\"\n        },\n        {\n            \"from\": \"É\",\n            \"to\": \"E\"\n        },\n        {\n            \"from\": \"ś\",\n            \"to\": \"s\"\n        },\n        {\n            \"from\": \"ķ\",\n            \"to\": \"k\"\n        },\n        {\n            \"from\": \"í\",\n            \"to\": \"i\"\n        },\n        {\n            \"from\": \"ź\",\n            \"to\": \"z\"\n        },\n        {\n            \"from\": \"|\",\n            \"to\": \":\"\n        },\n        {\n            \"from\": \"П\",\n            \"to\": \"P\"\n        },\n        {\n            \"from\": \"р\",\n            \"to\": \"r\"\n        },\n        {\n            \"from\": \"и\",\n            \"to\": \"i\"\n        },\n        {\n            \"from\": \"в\",\n            \"to\": \"v\"\n        },\n        {\n            \"from\": \"е\",\n            \"to\": \"e\"\n        },\n        {\n            \"from\": \"т\",\n            \"to\": \"t\"\n        },\n        {\n            \"from\": \"Е\",\n            \"to\": \"E\"\n        },\n        {\n            \"from\": \"с\",\n            \"to\": \"s\"\n        },\n        {\n            \"from\": \"к\",\n            \"to\": \"k\"\n        },\n        {\n            \"from\": \"и\",\n            \"to\": \"i\"\n        },\n        {\n            \"from\": \"з\",\n            \"to\": \"z\"\n        }\n    ],\n    \"message\": \"Sms xabar narxi EU100 : Xitoy tili Shi Jie  : Dza[?]om Eskiz : Privet Eskiz\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Проверка символов SMS",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"message\": \"...\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://notify.eskiz.uz/api/message/sms/check",
+              "protocol": "https",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "check"
+              ]
+            },
+            "description": "Проверка SMS-сообщения. С помощью данного API вы можете получить информацию о том, попало ли SMS в черный список, из скольких частей состоит сообщение, а также узнать стоимость для каждой компании."
+          },
+          "response": [
+            {
+              "name": "Проверка SMS",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"message\": \"Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест Тест\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://notify.eskiz.uz/api/message/sms/check",
+                  "protocol": "https",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "check"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"user_id\": 23,\n        \"info\": [\n            {\n                \"smsc\": 1,\n                \"is_ad\": true,\n                \"price\": 175,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 2,\n                \"is_ad\": true,\n                \"price\": 95,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 3,\n                \"is_ad\": true,\n                \"price\": 340,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 4,\n                \"is_ad\": true,\n                \"price\": 95,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 5,\n                \"is_ad\": true,\n                \"price\": 175,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 6,\n                \"is_ad\": true,\n                \"price\": 175,\n                \"is_error\": false,\n                \"error\": \"\"\n            },\n            {\n                \"smsc\": 7,\n                \"is_ad\": true,\n                \"price\": 95,\n                \"is_error\": false,\n                \"error\": \"\"\n            }\n        ],\n        \"forbidden\": false,\n        \"keywords\": null,\n        \"can_send\": true,\n        \"bytes_count\": 218,\n        \"chars_count\": 109,\n        \"parts_count\": 2\n    },\n    \"id\": null\n}"
+            }
+          ]
+        }
+      ],
+      "description": "_**СТАТУС СООБЩЕНИЕЯ**_\n\n**NEW** - СМС в ожидании отправления оператору  \n**STORED** - Отправляется только через CALLBACK_URL и означает, что SMS уже записано в базу данных.  \n**ACCEPTED** - Минимум одна часть SMS передана сотовому оператору, но со стороны оператора не получен обратный статус SMS сообщения;  \n**PARTDELIVERED -** Минимум одна часть SMS доставлено;  \n**DELIVERED** - доставлено;  \n**REJECTED -** один из основных причин это то что номер находится в черном списке;\n\n_**СТАТУС КАЖДОЙ ЧАСТИ СООБЩЕНИЯ**_\n\n**NEW** - СМС в ожидании отправления оператору  \n**ACCEPTED** - СМС передан сотовому оператору, но со стороны оператора обратно не получено статус смс сообщений;  \n**DELIVRD** - доставлено;  \n**UNDELIV / UNDELIVERABLE** - недоставлено, обычно причиной может быть то что абонент блокируется со стороны оператора(недостаточно средст или долг);  \n**EXPIRED** - срок жизни смс истек(когда абонент в течение сутки не выходил на связь. У билайн если в теение часа);  \n**REJECTD** - один из основных причин это то что номер находится в черном списке;  \n**DELETED** - ошибка при отправки запроса(например когда адрес отправителя указан неверно);  \n**UNKNOWN** - Неопределенный статус  \n**ENROUTE** - Неопределенный статус в процессе отправки",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Отчеты",
+      "item": [
+        {
+          "name": "Итог отправленных СМС",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "year",
+                  "value": "2023",
+                  "description": "Год",
+                  "type": "text"
+                },
+                {
+                  "key": "month",
+                  "value": "11",
+                  "description": "Месяц",
+                  "type": "text"
+                },
+                {
+                  "key": "is_global",
+                  "value": "0",
+                  "description": "1 - Если нужно получить итог по международным SMS",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://notify.eskiz.uz/api/user/totals",
+              "protocol": "https",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "user",
+                "totals"
+              ]
+            },
+            "description": "Итого отправленных СМС"
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "year",
+                      "value": "2018",
+                      "type": "text"
+                    },
+                    {
+                      "key": "user_id",
+                      "value": "5",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "https://notify.eskiz.uz/api/user/totals",
+                  "protocol": "https",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    "totals"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"status\": \"success\",\r\n    \"data\": [\r\n        {\r\n            \"status\": \"DELIVERED\",\r\n            \"month\": \"Nov\",\r\n            \"packets\": 3\r\n        }\r\n    ],\r\n    \"id\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить баланс",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{vash_token_zdes}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {vash_token_zdes}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://notify.eskiz.uz/api/user/get-limit",
+              "protocol": "http",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "user",
+                "get-limit"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "пример",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+                    "key": "Authorization",
+                    "value": "Bearer {vash_token_zdes}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://notify.eskiz.uz/api/user/get-limit",
+                  "protocol": "http",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    "get-limit"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"data\": {\r\n        \"balance\": 0\r\n    },\r\n    \"status\": \"success\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Экспортировать в формате CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "year",
+                  "value": "2024",
+                  "description": "Год",
+                  "type": "text"
+                },
+                {
+                  "key": "month",
+                  "value": "1",
+                  "description": "Месяц",
+                  "type": "text"
+                },
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "YYYY-MM-DD HH:mm:ss",
+                  "type": "text"
+                },
+                {
+                  "key": "end",
+                  "value": "",
+                  "description": "YYYY-MM-DD HH:mm:ss",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/export?status=all",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "all",
+                  "description": "`all` или `delivered` или `rejected`"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Итого по месяцам",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/report/total-by-month?year=2024",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "report",
+                "total-by-month"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2024",
+                  "description": "Год"
+                }
+              ]
+            },
+            "description": "**ad_parts** - Количество рекламных СМС  \n**ad_spent** - Расходы на рекламные СМС\n\n**parts** - Количество сервисных СМС  \n**spent** - Расходы на сервисные СМС"
+          },
+          "response": [
+            {
+              "name": "Итого по месяцам",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/report/total-by-month?year=2024",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "report",
+                    "total-by-month"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2024",
+                      "description": "Год"
+                    }
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "name": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"data\": [\n        {\n            \"year\": 2024,\n            \"month\": 2,\n            \"ad_parts\": 14,\n            \"ad_spent\": 1610,\n            \"parts\": 409,\n            \"spent\": 22594,\n            \"total_parts\": 423,\n            \"total_spent\": 24204\n        },\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 8,\n            \"ad_spent\": 920,\n            \"parts\": 30,\n            \"spent\": 1500,\n            \"total_parts\": 38,\n            \"total_spent\": 2420\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Итого по компаниям",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "year",
+                  "value": "2024",
+                  "description": "Год",
+                  "type": "text"
+                },
+                {
+                  "key": "month",
+                  "value": "1",
+                  "description": "Месяц",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api//report/total-by-smsc",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "",
+                "report",
+                "total-by-smsc"
+              ]
+            },
+            "description": "**smsc_id** - ID компании\n\n| smsc_id | Компания |\n| --- | --- |\n| 1 | Mobiuz |\n| 2 | Beeline |\n| 3 | Ucell |\n| 4 | Humans |\n| 5 | Uzmobile GSM |\n| 6 | Uzmobile CDMA |\n| 7 | Perfectum |\n| 8 | Global |\n\n**ad_parts** - Количество рекламных СМС  \n**ad_spent** - Расходы на рекламные СМС\n\n**parts** - Количество сервисных СМС  \n**spent** - Расходы на сервисные СМС"
+          },
+          "response": [
+            {
+              "name": "Итого по компаниям",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api//report/total-by-smsc",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "",
+                    "report",
+                    "total-by-smsc"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "name": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"data\": [\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 0,\n            \"ad_spent\": 0,\n            \"parts\": 9,\n            \"spent\": 450,\n            \"total_parts\": 9,\n            \"total_spent\": 450,\n            \"smsc_id\": 1\n        },\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 0,\n            \"ad_spent\": 0,\n            \"parts\": 10,\n            \"spent\": 500,\n            \"total_parts\": 10,\n            \"total_spent\": 500,\n            \"smsc_id\": 2\n        },\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 8,\n            \"ad_spent\": 920,\n            \"parts\": 0,\n            \"spent\": 0,\n            \"total_parts\": 8,\n            \"total_spent\": 920,\n            \"smsc_id\": 3\n        },\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 0,\n            \"ad_spent\": 0,\n            \"parts\": 5,\n            \"spent\": 250,\n            \"total_parts\": 5,\n            \"total_spent\": 250,\n            \"smsc_id\": 4\n        },\n        {\n            \"year\": 2024,\n            \"month\": 1,\n            \"ad_parts\": 0,\n            \"ad_spent\": 0,\n            \"parts\": 6,\n            \"spent\": 300,\n            \"total_parts\": 6,\n            \"total_spent\": 300,\n            \"smsc_id\": 5\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Системные логи",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/logs/sms/:id",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "logs",
+                "sms",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "ID СМС"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Системные логи",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "name": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"messages\": [\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:28.066Z\",\n            \"message\": \"CallbackURL bo'sh\",\n            \"full_message\": \"\",\n            \"level_name\": \"WARN\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:28.061Z\",\n            \"message\": \"SMS muvaffaqiyatli update qilindi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:28.044Z\",\n            \"message\": \"SMS ning 1-qismi holati o'zgardi (state=DELIVRD, command status=0)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:28.034Z\",\n            \"message\": \"SMS ni update qilishdan oldin\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:27.130Z\",\n            \"message\": \"SMS ning holati o'zgardi (state=DELIVRD, date=2024-02-27 16:30:27.128016004 +0500 +05)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:27.128Z\",\n            \"message\": \"Kompaniya tomonidan SMS bo'yicha holat qabul qilindi (state=DELIVRD)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:25.064Z\",\n            \"message\": \"CallbackURL bo'sh\",\n            \"full_message\": \"\",\n            \"level_name\": \"WARN\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:25.062Z\",\n            \"message\": \"SMS muvaffaqiyatli update qilindi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:25.044Z\",\n            \"message\": \"SMS ning 1-qismi holati o'zgardi (state=ACCEPTED, command status=0)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:25.039Z\",\n            \"message\": \"SMS ni update qilishdan oldin\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.064Z\",\n            \"message\": \"Barcha SMS qismlari kompaniya tomonidan muvaffaqiyatli qabul qilindi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.063Z\",\n            \"message\": \"SMS ning holati o'zgardi (state=ACCEPTED)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.062Z\",\n            \"message\": \"SMS ning 1-qismi kompaniya tomonidan qabul qilindi (sequence number=1541125, status=0)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.040Z\",\n            \"message\": \"CallbackURL bo'sh\",\n            \"full_message\": \"\",\n            \"level_name\": \"WARN\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.038Z\",\n            \"message\": \"SMS muvaffaqiyatli jo'natish uchun navbatga qo'yildi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.038Z\",\n            \"message\": \"SMS ning 1-qismi muvaffaqiyatli jo'natildi (total=1, sequence number=1541125, src npi/ton=0/5, dst npi/ton=1/1)\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.037Z\",\n            \"message\": \"SMS qismlari haqida ma'lumot: encoding = 0, parts = 1\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"dispatch_id\": \"<nil>\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:24.033Z\",\n            \"message\": \"SMS ni bazaga yozishdan oldin\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"to\": \"99899*******\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:23.358Z\",\n            \"message\": \"SMS bazaga yozish uchun qabul qilindi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:23.353Z\",\n            \"message\": \"SMS muvaffaqiyatli ma'lumotlar bazasiga yozish uchun navbatga qo'yildi\",\n            \"full_message\": \"\",\n            \"level_name\": \"WARN\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"from\": \"4546\",\n            \"to\": \"99899*******\",\n            \"user_sms_id\": \"test-sms-1\",\n            \"timestamp\": \"2024-02-27T11:30:23.352Z\",\n            \"message\": \"Ma'lumotlar muvaffaqiyatli tahlil (parse) qilindi\",\n            \"full_message\": \"\",\n            \"level_name\": \"INFO\"\n        },\n        {\n            \"ip\": \"127.0.0.1\",\n            \"timestamp\": \"2024-02-27T11:30:23.351Z\",\n            \"message\": \"HTTP/POST ma'lumotlari (body=----------------------------467337800515581272133271\",\n            \"full_message\": \"HTTP/POST ma'lumotlari (body=----------------------------467337800515581272133271\\r\\nContent-Disposition: form-data; name=\\\"mobile_phone\\\"\\r\\n\\r\\n99899*******\\r\\n----------------------------467337800515581272133271\\r\\nContent-Disposition: form-data; name=\\\"message\\\"\\r\\n\\r\\nTest sms\\r\\n----------------------------467337800515581272133271\\r\\nContent-Disposition: form-data; name=\\\"from\\\"\\r\\n\\r\\n4546\\r\\n----------------------------467337800515581272133271\\r\\nContent-Disposition: form-data; name=\\\"user_sms_id\\\"\\r\\n\\r\\ntest-sms-1\\r\\n----------------------------467337800515581272133271--\\r\\n)\",\n            \"level_name\": \"INFO\"\n        }\n    ],\n    \"messages_count\": 22\n}"
+            }
+          ]
+        },
+        {
+          "name": "Расходы по датам",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "start_date",
+                  "value": "2023-11-01 00:00",
+                  "type": "text",
+                  "description": "С `%Y-%m-%d %H:%M`"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2023-11-02 23:59",
+                  "type": "text",
+                  "description": "По `%Y-%m-%d %H:%M`"
+                },
+                {
+                  "key": "is_ad",
+                  "value": "",
+                  "type": "text",
+                  "description": "[пустой] - все\n1 - только рекламное\n0 - только сервисное"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/report/total-by-range?status",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "report",
+                "total-by-range"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "[пустой] - все\n\"delivered\" - только частично и полностью доставленное\n\"rejected\" - только не доставленное "
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Расходы по рассылке",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "dispatch_id",
+                  "value": "123",
+                  "type": "text",
+                  "description": "ID рассылки"
+                },
+                {
+                  "key": "is_ad",
+                  "value": "",
+                  "type": "text",
+                  "description": "[пустой] - все\n1 - только рекламное\n0 - только сервисное"
+                }
+              ]
+            },
+            "url": {
+              "raw": "notify.eskiz.uz/api/report/total-by-dispatch?status",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "report",
+                "total-by-dispatch"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "[пустой] - все\n\"delivered\" - только частично и полностью доставленное\n\"rejected\" - только не доставленное "
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить статус по ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/message/sms/status_by_id/:id",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "message",
+                "sms",
+                "status_by_id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INT или UUID"
+                }
+              ]
+            },
+            "description": "Если `:id` INT - это ID SMS на платформе Eskiz\n\nЕсли `:id` имеет тип **UUID** (полученный в результате вызова API `send`, `send-batch`, `send-global` или значение столбца `request_id` в результатах других API), то по данному UUID система возвращает **информацию о статусе SMS, отправленной за последние 30 дней**.\n\nЕсли с момента отправки SMS прошло более 30 дней, необходимо передать в параметре `:id` значение ID SMS на платформе Eskiz."
+          },
+          "response": [
+            {
+              "name": "Получить статус по ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/status_by_id/61359094",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "status_by_id",
+                    "61359094"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": ""
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 61359094,\n        \"user_id\": 0,\n        \"country_id\": 83,\n        \"connection_id\": 8,\n        \"smsc_id\": 8,\n        \"dispatch_id\": null,\n        \"user_sms_id\": null,\n        \"request_id\": \"b169553b-de29-4649-b5dd-cfafd85984f9\",\n        \"price\": 0,\n        \"total_price\": 0,\n        \"is_ad\": false,\n        \"nick\": \"from\",\n        \"to\": \"to\",\n        \"message\": \"Test\",\n        \"encoding\": 1,\n        \"parts_count\": 1,\n        \"parts\": {\n            \"msgid\": {\n                \"group\": 457,\n                \"accepted\": true,\n                \"dlr_time\": \"2024-05-31T22:02:32+05:00\",\n                \"dlr_state\": \"DELIVRD\",\n                \"part_index\": 0,\n                \"accept_time\": \"2024-05-31T22:02:28.672497042+05:00\",\n                \"accept_status\": 0\n            }\n        },\n        \"status\": \"DELIVERED\",\n        \"smsc_data\": {\n            \"msgid\": [\n                \"DELIVRD\"\n            ]\n        },\n        \"sent_at\": \"2024-05-31T22:02:27Z\",\n        \"submit_sm_resp_at\": \"2024-05-31T22:02:28.672497Z\",\n        \"delivery_sm_at\": \"2024-05-31T22:02:32Z\",\n        \"created_at\": \"2024-05-31T22:02:27.954Z\",\n        \"updated_at\": \"2024-05-31T22:02:33.065096Z\"\n    },\n    \"id\": null\n}"
+            },
+            {
+              "name": "Получить статус по UUID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/message/sms/status_by_id/b169553b-de29-4649-b5dd-cfafd85984f9",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "message",
+                    "sms",
+                    "status_by_id",
+                    "b169553b-de29-4649-b5dd-cfafd85984f9"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": ""
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 61359094,\n        \"user_id\": 0,\n        \"country_id\": 83,\n        \"connection_id\": 8,\n        \"smsc_id\": 8,\n        \"dispatch_id\": null,\n        \"user_sms_id\": null,\n        \"request_id\": \"b169553b-de29-4649-b5dd-cfafd85984f9\",\n        \"price\": 0,\n        \"total_price\": 0,\n        \"is_ad\": false,\n        \"nick\": \"from\",\n        \"to\": \"to\",\n        \"message\": \"Test\",\n        \"encoding\": 1,\n        \"parts_count\": 1,\n        \"parts\": {\n            \"msgid\": {\n                \"group\": 457,\n                \"accepted\": true,\n                \"dlr_time\": \"2024-05-31T22:02:32+05:00\",\n                \"dlr_state\": \"DELIVRD\",\n                \"part_index\": 0,\n                \"accept_time\": \"2024-05-31T22:02:28.672497042+05:00\",\n                \"accept_status\": 0\n            }\n        },\n        \"status\": \"DELIVERED\",\n        \"smsc_data\": {\n            \"msgid\": [\n                \"DELIVRD\"\n            ]\n        },\n        \"sent_at\": \"2024-05-31T22:02:27Z\",\n        \"submit_sm_resp_at\": \"2024-05-31T22:02:28.672497Z\",\n        \"delivery_sm_at\": \"2024-05-31T22:02:32Z\",\n        \"created_at\": \"2024-05-31T22:02:27.954Z\",\n        \"updated_at\": \"2024-05-31T22:02:33.065096Z\"\n    },\n    \"id\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Получить цены",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "notify.eskiz.uz/api/user/prices",
+              "host": [
+                "notify",
+                "eskiz",
+                "uz"
+              ],
+              "path": [
+                "api",
+                "user",
+                "prices"
+              ]
+            },
+            "description": "Данный API возвращает стоимость отправки одного SMS через глобальные и локальные сети операторов."
+          },
+          "response": [
+            {
+              "name": "Получить цены",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "notify.eskiz.uz/api/user/prices",
+                  "host": [
+                    "notify",
+                    "eskiz",
+                    "uz"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    "prices"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": ""
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"global\": [\n        {\n            \"code\": \"ae\",\n            \"name\": \"United Arab Emirates\",\n            \"prefix\": \"971\",\n            \"status\": \"active\",\n            \"price\": 1901\n        },\n        {\n            \"code\": \"af\",\n            \"name\": \"Afghanistan\",\n            \"prefix\": \"93\",\n            \"status\": \"active\",\n            \"price\": 5241\n        },\n        {\n            \"code\": \"al\",\n            \"name\": \"Albania\",\n            \"prefix\": \"355\",\n            \"status\": \"active\",\n            \"price\": 1320\n        },\n        {\n            \"code\": \"am\",\n            \"name\": \"Armenia\",\n            \"prefix\": \"374\",\n            \"status\": \"active\",\n            \"price\": 2471\n        },\n        {\n            \"code\": \"ao\",\n            \"name\": \"Angola\",\n            \"prefix\": \"244\",\n            \"status\": \"active\",\n            \"price\": 1640\n        },\n        {\n            \"code\": \"ar\",\n            \"name\": \"Argentina\",\n            \"prefix\": \"54\",\n            \"status\": \"active\",\n            \"price\": 1033\n        },\n        {\n            \"code\": \"at\",\n            \"name\": \"Austria\",\n            \"prefix\": \"43\",\n            \"status\": \"active\",\n            \"price\": 1385\n        },\n        {\n            \"code\": \"au\",\n            \"name\": \"Australia\",\n            \"prefix\": \"61\",\n            \"status\": \"active\",\n            \"price\": 870\n        },\n        {\n            \"code\": \"aw\",\n            \"name\": \"Aruba\",\n            \"prefix\": \"297\",\n            \"status\": \"active\",\n            \"price\": 1458\n        },\n        {\n            \"code\": \"ax\",\n            \"name\": \"Aland Islands\",\n            \"prefix\": \"35818\",\n            \"status\": \"active\",\n            \"price\": 1224\n        },\n        {\n            \"code\": \"az\",\n            \"name\": \"Azerbaijan\",\n            \"prefix\": \"994\",\n            \"status\": \"active\",\n            \"price\": 5912\n        },\n        {\n            \"code\": \"ba\",\n            \"name\": \"Bosnia and Herzegovina\",\n            \"prefix\": \"387\",\n            \"status\": \"active\",\n            \"price\": 103\n        },\n        {\n            \"code\": \"bb\",\n            \"name\": \"Barbados\",\n            \"prefix\": \"1246\",\n            \"status\": \"active\",\n            \"price\": 112\n        },\n        {\n            \"code\": \"bd\",\n            \"name\": \"Bangladesh\",\n            \"prefix\": \"880\",\n            \"status\": \"active\",\n            \"price\": 4091\n        },\n        {\n            \"code\": \"be\",\n            \"name\": \"Belgium\",\n            \"prefix\": \"32\",\n            \"status\": \"active\",\n            \"price\": 1487\n        },\n        {\n            \"code\": \"bg\",\n            \"name\": \"Bulgaria\",\n            \"prefix\": \"359\",\n            \"status\": \"active\",\n            \"price\": 2199\n        },\n        {\n            \"code\": \"bh\",\n            \"name\": \"Bahrain\",\n            \"prefix\": \"973\",\n            \"status\": \"active\",\n            \"price\": 669\n        },\n        {\n            \"code\": \"br\",\n            \"name\": \"Brazil\",\n            \"prefix\": \"55\",\n            \"status\": \"active\",\n            \"price\": 881\n        },\n        {\n            \"code\": \"bs\",\n            \"name\": \"Bahamas\",\n            \"prefix\": \"1242\",\n            \"status\": \"active\",\n            \"price\": 112\n        },\n        {\n            \"code\": \"by\",\n            \"name\": \"Belarus\",\n            \"prefix\": \"375\",\n            \"status\": \"active\",\n            \"price\": 3849\n        },\n        {\n            \"code\": \"bz\",\n            \"name\": \"Belize\",\n            \"prefix\": \"501\",\n            \"status\": \"active\",\n            \"price\": 4907\n        },\n        {\n            \"code\": \"ca\",\n            \"name\": \"Canada\",\n            \"prefix\": \"1\",\n            \"status\": \"active\",\n            \"price\": 112\n        },\n        {\n            \"code\": \"cf\",\n            \"name\": \"Central African Republic\",\n            \"prefix\": \"236\",\n            \"status\": \"active\",\n            \"price\": 584\n        },\n        {\n            \"code\": \"ch\",\n            \"name\": \"Switzerland\",\n            \"prefix\": \"41\",\n            \"status\": \"active\",\n            \"price\": 1049\n        },\n        {\n            \"code\": \"cn\",\n            \"name\": \"China\",\n            \"prefix\": \"86\",\n            \"status\": \"active\",\n            \"price\": 615\n        },\n        {\n            \"code\": \"co\",\n            \"name\": \"Colombia\",\n            \"prefix\": \"57\",\n            \"status\": \"active\",\n            \"price\": 713\n        },\n        {\n            \"code\": \"cu\",\n            \"name\": \"Cuba\",\n            \"prefix\": \"53\",\n            \"status\": \"active\",\n            \"price\": 1196\n        },\n        {\n            \"code\": \"cy\",\n            \"name\": \"Cyprus\",\n            \"prefix\": \"357\",\n            \"status\": \"active\",\n            \"price\": 1244\n        },\n        {\n            \"code\": \"cz\",\n            \"name\": \"Czech Republic\",\n            \"prefix\": \"420\",\n            \"status\": \"active\",\n            \"price\": 940\n        },\n        {\n            \"code\": \"de\",\n            \"name\": \"Germany\",\n            \"prefix\": \"49\",\n            \"status\": \"active\",\n            \"price\": 1610\n        },\n        {\n            \"code\": \"dk\",\n            \"name\": \"Denmark\",\n            \"prefix\": \"45\",\n            \"status\": \"active\",\n            \"price\": 910\n        },\n        {\n            \"code\": \"ee\",\n            \"name\": \"Estonia\",\n            \"prefix\": \"372\",\n            \"status\": \"active\",\n            \"price\": 1351\n        },\n        {\n            \"code\": \"eg\",\n            \"name\": \"Egypt\",\n            \"prefix\": \"20\",\n            \"status\": \"active\",\n            \"price\": 2937\n        },\n        {\n            \"code\": \"es\",\n            \"name\": \"Spain\",\n            \"prefix\": \"34\",\n            \"status\": \"active\",\n            \"price\": 543\n        },\n        {\n            \"code\": \"fi\",\n            \"name\": \"Finland\",\n            \"prefix\": \"358\",\n            \"status\": \"active\",\n            \"price\": 1266\n        },\n        {\n            \"code\": \"fr\",\n            \"name\": \"France\",\n            \"prefix\": \"33\",\n            \"status\": \"active\",\n            \"price\": 1136\n        },\n        {\n            \"code\": \"gb\",\n            \"name\": \"United Kingdom\",\n            \"prefix\": \"44\",\n            \"status\": \"active\",\n            \"price\": 745\n        },\n        {\n            \"code\": \"ge\",\n            \"name\": \"Georgia\",\n            \"prefix\": \"995\",\n            \"status\": \"active\",\n            \"price\": 3091\n        },\n        {\n            \"code\": \"gg\",\n            \"name\": \"Guernsey\",\n            \"prefix\": \"44\",\n            \"status\": \"active\",\n            \"price\": 718\n        },\n        {\n            \"code\": \"gr\",\n            \"name\": \"Greece\",\n            \"prefix\": \"30\",\n            \"status\": \"active\",\n            \"price\": 892\n        },\n        {\n            \"code\": \"hk\",\n            \"name\": \"Hong Kong\",\n            \"prefix\": \"852\",\n            \"status\": \"active\",\n            \"price\": 1143\n        },\n        {\n            \"code\": \"hr\",\n            \"name\": \"Croatia\",\n            \"prefix\": \"385\",\n            \"status\": \"active\",\n            \"price\": 1317\n        },\n        {\n            \"code\": \"hu\",\n            \"name\": \"Hungary\",\n            \"prefix\": \"36\",\n            \"status\": \"active\",\n            \"price\": 1243\n        },\n        {\n            \"code\": \"id\",\n            \"name\": \"Indonesia\",\n            \"prefix\": \"62\",\n            \"status\": \"active\",\n            \"price\": 6178\n        },\n        {\n            \"code\": \"ie\",\n            \"name\": \"Ireland\",\n            \"prefix\": \"353\",\n            \"status\": \"active\",\n            \"price\": 1058\n        },\n        {\n            \"code\": \"il\",\n            \"name\": \"Israel\",\n            \"prefix\": \"972\",\n            \"status\": \"active\",\n            \"price\": 2803\n        },\n        {\n            \"code\": \"in\",\n            \"name\": \"India\",\n            \"prefix\": \"91\",\n            \"status\": \"active\",\n            \"price\": 1221\n        },\n        {\n            \"code\": \"iq\",\n            \"name\": \"Iraq\",\n            \"prefix\": \"964\",\n            \"status\": \"active\",\n            \"price\": 4317\n        },\n        {\n            \"code\": \"ir\",\n            \"name\": \"Iran\",\n            \"prefix\": \"98\",\n            \"status\": \"active\",\n            \"price\": 3227\n        },\n        {\n            \"code\": \"is\",\n            \"name\": \"Iceland\",\n            \"prefix\": \"354\",\n            \"status\": \"active\",\n            \"price\": 1145\n        },\n        {\n            \"code\": \"it\",\n            \"name\": \"Italy\",\n            \"prefix\": \"39\",\n            \"status\": \"active\",\n            \"price\": 1335\n        },\n        {\n            \"code\": \"jp\",\n            \"name\": \"Japan\",\n            \"prefix\": \"81\",\n            \"status\": \"active\",\n            \"price\": 1266\n        },\n        {\n            \"code\": \"kg\",\n            \"name\": \"Kyrgyzstan\",\n            \"prefix\": \"996\",\n            \"status\": \"active\",\n            \"price\": 5053\n        },\n        {\n            \"code\": \"kh\",\n            \"name\": \"Cambodia\",\n            \"prefix\": \"855\",\n            \"status\": \"active\",\n            \"price\": 2333\n        },\n        {\n            \"code\": \"kr\",\n            \"name\": \"South Korea\",\n            \"prefix\": \"82\",\n            \"status\": \"active\",\n            \"price\": 723\n        },\n        {\n            \"code\": \"kw\",\n            \"name\": \"Kuwait\",\n            \"prefix\": \"965\",\n            \"status\": \"active\",\n            \"price\": 3975\n        },\n        {\n            \"code\": \"kz\",\n            \"name\": \"Kazakhstan\",\n            \"prefix\": \"7\",\n            \"status\": \"active\",\n            \"price\": 8311\n        },\n        {\n            \"code\": \"li\",\n            \"name\": \"Liechtenstein\",\n            \"prefix\": \"423\",\n            \"status\": \"active\",\n            \"price\": 872\n        },\n        {\n            \"code\": \"lk\",\n            \"name\": \"Sri Lanka\",\n            \"prefix\": \"94\",\n            \"status\": \"active\",\n            \"price\": 4135\n        },\n        {\n            \"code\": \"lt\",\n            \"name\": \"Lithuania\",\n            \"prefix\": \"370\",\n            \"status\": \"active\",\n            \"price\": 964\n        },\n        {\n            \"code\": \"lu\",\n            \"name\": \"Luxembourg\",\n            \"prefix\": \"352\",\n            \"status\": \"active\",\n            \"price\": 1167\n        },\n        {\n            \"code\": \"lv\",\n            \"name\": \"Latvia\",\n            \"prefix\": \"371\",\n            \"status\": \"active\",\n            \"price\": 1067\n        },\n        {\n            \"code\": \"ma\",\n            \"name\": \"Morocco\",\n            \"prefix\": \"212\",\n            \"status\": \"active\",\n            \"price\": 2872\n        },\n        {\n            \"code\": \"mc\",\n            \"name\": \"Monaco\",\n            \"prefix\": \"377\",\n            \"status\": \"active\",\n            \"price\": 2293\n        },\n        {\n            \"code\": \"md\",\n            \"name\": \"Moldova\",\n            \"prefix\": \"373\",\n            \"status\": \"active\",\n            \"price\": 1125\n        },\n        {\n            \"code\": \"mg\",\n            \"name\": \"Madagascar\",\n            \"prefix\": \"261\",\n            \"status\": \"active\",\n            \"price\": 6614\n        },\n        {\n            \"code\": \"mk\",\n            \"name\": \"Macedonia\",\n            \"prefix\": \"389\",\n            \"status\": \"active\",\n            \"price\": 1024\n        },\n        {\n            \"code\": \"mm\",\n            \"name\": \"Myanmar\",\n            \"prefix\": \"95\",\n            \"status\": \"active\",\n            \"price\": 3471\n        },\n        {\n            \"code\": \"mn\",\n            \"name\": \"Mongolia\",\n            \"prefix\": \"976\",\n            \"status\": \"active\",\n            \"price\": 2892\n        },\n        {\n            \"code\": \"mt\",\n            \"name\": \"Malta\",\n            \"prefix\": \"356\",\n            \"status\": \"active\",\n            \"price\": 1282\n        },\n        {\n            \"code\": \"mv\",\n            \"name\": \"Maldives\",\n            \"prefix\": \"960\",\n            \"status\": \"active\",\n            \"price\": 476\n        },\n        {\n            \"code\": \"mx\",\n            \"name\": \"Mexico\",\n            \"prefix\": \"52\",\n            \"status\": \"active\",\n            \"price\": 742\n        },\n        {\n            \"code\": \"my\",\n            \"name\": \"Malaysia\",\n            \"prefix\": \"60\",\n            \"status\": \"active\",\n            \"price\": 1121\n        },\n        {\n            \"code\": \"nl\",\n            \"name\": \"Netherlands\",\n            \"prefix\": \"31\",\n            \"status\": \"active\",\n            \"price\": 1438\n        },\n        {\n            \"code\": \"no\",\n            \"name\": \"Norway\",\n            \"prefix\": \"47\",\n            \"status\": \"active\",\n            \"price\": 1049\n        },\n        {\n            \"code\": \"nz\",\n            \"name\": \"New Zealand\",\n            \"prefix\": \"64\",\n            \"status\": \"active\",\n            \"price\": 1485\n        },\n        {\n            \"code\": \"om\",\n            \"name\": \"Oman\",\n            \"prefix\": \"968\",\n            \"status\": \"active\",\n            \"price\": 2212\n        },\n        {\n            \"code\": \"ph\",\n            \"name\": \"Philippines\",\n            \"prefix\": \"63\",\n            \"status\": \"active\",\n            \"price\": 3142\n        },\n        {\n            \"code\": \"pk\",\n            \"name\": \"Pakistan\",\n            \"prefix\": \"92\",\n            \"status\": \"active\",\n            \"price\": 5874\n        },\n        {\n            \"code\": \"pl\",\n            \"name\": \"Poland\",\n            \"prefix\": \"48\",\n            \"status\": \"active\",\n            \"price\": 620\n        },\n        {\n            \"code\": \"pt\",\n            \"name\": \"Portugal\",\n            \"prefix\": \"351\",\n            \"status\": \"active\",\n            \"price\": 770\n        },\n        {\n            \"code\": \"qa\",\n            \"name\": \"Qatar\",\n            \"prefix\": \"974\",\n            \"status\": \"active\",\n            \"price\": 912\n        },\n        {\n            \"code\": \"ro\",\n            \"name\": \"Romania\",\n            \"prefix\": \"40\",\n            \"status\": \"active\",\n            \"price\": 1092\n        },\n        {\n            \"code\": \"rs\",\n            \"name\": \"Serbia\",\n            \"prefix\": \"381\",\n            \"status\": \"active\",\n            \"price\": 3125\n        },\n        {\n            \"code\": \"ru\",\n            \"name\": \"Russia\",\n            \"prefix\": \"7\",\n            \"status\": \"active\",\n            \"price\": 8311\n        },\n        {\n            \"code\": \"sa\",\n            \"name\": \"Saudi Arabia\",\n            \"prefix\": \"966\",\n            \"status\": \"active\",\n            \"price\": 1682\n        },\n        {\n            \"code\": \"se\",\n            \"name\": \"Sweden\",\n            \"prefix\": \"46\",\n            \"status\": \"active\",\n            \"price\": 946\n        },\n        {\n            \"code\": \"sg\",\n            \"name\": \"Singapore\",\n            \"prefix\": \"65\",\n            \"status\": \"active\",\n            \"price\": 790\n        },\n        {\n            \"code\": \"si\",\n            \"name\": \"Slovenia\",\n            \"prefix\": \"386\",\n            \"status\": \"active\",\n            \"price\": 2892\n        },\n        {\n            \"code\": \"sk\",\n            \"name\": \"Slovakia\",\n            \"prefix\": \"421\",\n            \"status\": \"active\",\n            \"price\": 1331\n        },\n        {\n            \"code\": \"th\",\n            \"name\": \"Thailand\",\n            \"prefix\": \"66\",\n            \"status\": \"active\",\n            \"price\": 430\n        },\n        {\n            \"code\": \"tj\",\n            \"name\": \"Tajikistan\",\n            \"prefix\": \"992\",\n            \"status\": \"active\",\n            \"price\": 8557\n        },\n        {\n            \"code\": \"tm\",\n            \"name\": \"Turkmenistan\",\n            \"prefix\": \"993\",\n            \"status\": \"active\",\n            \"price\": 2720\n        },\n        {\n            \"code\": \"tn\",\n            \"name\": \"Tunisia\",\n            \"prefix\": \"216\",\n            \"status\": \"active\",\n            \"price\": 3818\n        },\n        {\n            \"code\": \"tr\",\n            \"name\": \"Turkey\",\n            \"prefix\": \"90\",\n            \"status\": \"active\",\n            \"price\": 430\n        },\n        {\n            \"code\": \"tw\",\n            \"name\": \"Taiwan\",\n            \"prefix\": \"886\",\n            \"status\": \"active\",\n            \"price\": 803\n        },\n        {\n            \"code\": \"ua\",\n            \"name\": \"Ukraine\",\n            \"prefix\": \"380\",\n            \"status\": \"active\",\n            \"price\": 2532\n        },\n        {\n            \"code\": \"us\",\n            \"name\": \"United States\",\n            \"prefix\": \"1\",\n            \"status\": \"active\",\n            \"price\": 112\n        },\n        {\n            \"code\": \"uy\",\n            \"name\": \"Uruguay\",\n            \"prefix\": \"598\",\n            \"status\": \"active\",\n            \"price\": 1364\n        },\n        {\n            \"code\": \"vi\",\n            \"name\": \"Vietnam\",\n            \"prefix\": \"1340\",\n            \"status\": \"active\",\n            \"price\": 112\n        }\n    ],\n    \"local\": [\n        {\n            \"smsc_id\": 2,\n            \"name\": \"beeline\",\n            \"price\": 50,\n            \"ad_price\": 50\n        },\n        {\n            \"smsc_id\": 3,\n            \"name\": \"ucell\",\n            \"price\": 50,\n            \"ad_price\": 115\n        },\n        {\n            \"smsc_id\": 4,\n            \"name\": \"humans\",\n            \"price\": 50,\n            \"ad_price\": 50\n        },\n        {\n            \"smsc_id\": 5,\n            \"name\": \"uzmobile\",\n            \"price\": 50,\n            \"ad_price\": 50\n        },\n        {\n            \"smsc_id\": 6,\n            \"name\": \"uzmobile_cdma\",\n            \"price\": 50,\n            \"ad_price\": 50\n        },\n        {\n            \"smsc_id\": 7,\n            \"name\": \"perfectum\",\n            \"price\": 50,\n            \"ad_price\": 50\n        },\n        {\n            \"smsc_id\": 1,\n            \"name\": \"mobiuz\",\n            \"price\": 60,\n            \"ad_price\": 80\n        }\n    ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const echoPostRequest = {",
+          "  url: 'http://notify.eskiz.uz/api/auth/login',",
+          "  method: 'POST',",
+          "  header: 'Content-Type:application/json',",
+          "  body: {",
+          "    mode: 'application/json',",
+          "    raw: JSON.stringify(",
+          "        {",
+          "        \temail:'test@eskiz.uz',",
+          "        \tpassword:'j6DWtQjjpLDNjWEk74Sx'",
+          "        })",
+          "  }",
+          "};",
+          "",
+          "pm.sendRequest(echoPostRequest, function (err, res) {",
+          "    console.log(err ? err : res.json());",
+          "        if (err === null) {",
+          "            console.log('Saving the token and expiry date')",
+          "            var responseJson = res.json();",
+          "            pm.environment.set('token', responseJson.data.token)",
+          "        }",
+          "    });"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
