@@ -34,6 +34,7 @@ class SmsResource(SyncResource):
                 message=message,
                 from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 
@@ -53,6 +54,7 @@ class SmsResource(SyncResource):
                 country_code=country_code,
                 callback_url=callback_url or self._config.callback_url,
                 unicode=unicode,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 
@@ -70,6 +72,7 @@ class SmsResource(SyncResource):
                 dispatch_id=dispatch_id,
                 from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 
@@ -144,6 +147,7 @@ class AsyncSmsResource(AsyncResource):
                 message=message,
                 from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 
@@ -163,6 +167,7 @@ class AsyncSmsResource(AsyncResource):
                 country_code=country_code,
                 callback_url=callback_url or self._config.callback_url,
                 unicode=unicode,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 
@@ -180,6 +185,7 @@ class AsyncSmsResource(AsyncResource):
                 dispatch_id=dispatch_id,
                 from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
+                allow_insecure_callback=self._config.allow_insecure_callback,
             )
         )
 

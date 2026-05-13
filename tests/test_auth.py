@@ -156,3 +156,80 @@ def test_password_not_in_config_repr() -> None:
     cfg = Config(email="a@b.c", password="super-secret")
     assert "super-secret" not in repr(cfg)
     assert "super-secret" not in str(cfg)
+
+
+def test_login_token_invalid_status_also_maps_to_invalid_credentials(client: EskizSMS) -> None:
+    """A 401 on /auth/login with status=token_invalid must surface as InvalidCredentials."""
+    with respx.mock() as mock:
+        mock.post(f"{BASE_URL}/auth/login").mock(
+            return_value=Response(
+                401, json={"status": "token_invalid", "message": "bad credentials"}
+            )
+        )
+        with pytest.raises(InvalidCredentials):
+            client.auth.me()
+
+
+def test_non_401_with_invalid_credentials_message_is_not_misclassified(
+    client: EskizSMS,
+) -> None:
+    """A 500 carrying 'Invalid credentials' must not be turned into InvalidCredentials."""
+    from eskiz import EskizBadRequest
+
+    with respx.mock() as mock:
+        mock_login(mock, token="t1")
+        mock.get(f"{BASE_URL}/auth/user").mock(
+            return_value=Response(500, json={"message": "Invalid credentials"})
+        )
+        with pytest.raises(EskizBadRequest) as exc_info:
+            client.auth.me()
+        assert not isinstance(exc_info.value, InvalidCredentials)
+
+
+def test_enable_token_refresh_false_raises_token_expired_without_refresh() -> None:
+    """When the flag is off, a 401 mid-session bubbles up as TokenExpired without refresh."""
+    from eskiz import TokenExpired
+
+    with (
+        respx.mock(assert_all_called=False) as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            enable_token_refresh=False,
+        ) as client,
+    ):
+        mock_login(mock, token="t1")
+        refresh = mock_refresh(mock, token="t2")
+        mock.get(f"{BASE_URL}/auth/user").mock(
+            return_value=Response(401, json={"message": "Expired Token"})
+        )
+
+        with pytest.raises(TokenExpired):
+            client.auth.me()
+        assert refresh.call_count == 0, "refresh must not be called when the flag is off"
+
+
+def test_refresh_after_failure_short_circuits_when_storage_has_newer_token() -> None:
+    """If a peer refreshed first, refresh_after_failure must reuse the new token."""
+    from eskiz import MemoryTokenStorage
+
+    storage = MemoryTokenStorage(initial="stale")
+    with (
+        respx.mock(assert_all_called=False) as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            token_storage=storage,
+        ) as client,
+    ):
+        refresh = mock_refresh(mock, token="never-used")
+
+        # Simulate concurrent peer: stash a fresh token in storage before
+        # the manager's refresh path runs.
+        storage.set("fresh")
+        new_token = client._tokens.refresh_after_failure("stale")  # type: ignore[attr-defined]
+
+        assert new_token == "fresh"
+        assert refresh.call_count == 0

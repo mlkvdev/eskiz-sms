@@ -119,8 +119,10 @@ class SmsLogResponse(BaseEskizModel):
 class SmsStatusDetail(BaseEskizModel):
     """Detailed per-message status from ``/message/sms/status_by_id/{id}``.
 
-    The Eskiz response is rich; we keep typed fields for the common ones and
-    expose the rest via :attr:`extras`.
+    The Eskiz response is rich; we keep typed fields for the common ones.
+    Unknown fields are silently dropped (the SDK won't break when Eskiz
+    adds new ones); access the raw response via ``client.sms.status(...)``
+    error paths or the underlying ``RawResponse`` if you need them.
     """
 
     id: int | None = None

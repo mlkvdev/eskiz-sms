@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, TypeVar
 
 from eskiz._validators import normalize_phone, validate_callback_url
-from eskiz.exceptions import EskizBadRequest
+from eskiz.exceptions import EskizBadRequest, EskizValidationError
 from eskiz.models import BatchMessage
 from eskiz.transport.base import RawResponse
 
@@ -67,10 +67,15 @@ def bool_flag(value: bool | None) -> str | None:
     return "1" if value else "0"
 
 
-def apply_callback(body: dict[str, Any], callback_url: str | None) -> None:
+def apply_callback(
+    body: dict[str, Any],
+    callback_url: str | None,
+    *,
+    allow_insecure: bool = False,
+) -> None:
     """Validate and inject a ``callback_url`` into a form body in place."""
     if callback_url is not None:
-        body["callback_url"] = validate_callback_url(callback_url)
+        body["callback_url"] = validate_callback_url(callback_url, allow_insecure=allow_insecure)
 
 
 def normalize_batch_messages(
@@ -82,6 +87,8 @@ def normalize_batch_messages(
         if isinstance(m, BatchMessage):
             out.append(m.model_dump())
         else:
+            if "to" not in m:
+                raise EskizValidationError("Batch message missing required 'to' field")
             out.append({**m, "to": normalize_phone(str(m["to"]))})
     return out
 

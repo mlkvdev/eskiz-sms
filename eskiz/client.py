@@ -16,7 +16,7 @@ from eskiz._protocol import auth as _auth_proto
 from eskiz.auth.storage import MemoryTokenStorage
 from eskiz.auth.token import SyncTokenManager
 from eskiz.config import DEFAULT_BASE_URL, DEFAULT_FROM_WHOM, DEFAULT_TIMEOUT, Config
-from eskiz.exceptions import InvalidCredentials, TokenExpired
+from eskiz.exceptions import InvalidCredentials, TokenExpired, TokenInvalid
 from eskiz.resources import (
     AuthResource,
     ReportsResource,
@@ -31,10 +31,15 @@ if TYPE_CHECKING:
 
 
 def _login(executor: SyncExecutor, email: str, password: str) -> str:
-    """Run a login and re-raise generic 401s as :class:`InvalidCredentials`."""
+    """Run a login and re-raise generic 401s as :class:`InvalidCredentials`.
+
+    Any 401 on ``/auth/login`` — including ``TokenInvalid`` if the server
+    happens to echo that status — should surface as bad credentials, not
+    leak through as a token error.
+    """
     try:
         return executor.run_unauth(_auth_proto.login(email, password))
-    except TokenExpired as exc:
+    except (TokenExpired, TokenInvalid) as exc:
         raise InvalidCredentials(
             exc.message, status=exc.status, status_code=exc.status_code
         ) from exc
@@ -49,14 +54,29 @@ class EskizSMS:
         base_url: API base URL. Override only for staging or proxies.
         timeout: Per-request timeout in seconds.
         callback_url: Default callback URL for SMS delivery webhooks.
+            Must be HTTPS unless ``allow_insecure_callback=True``.
         from_whom: Default alphanumeric sender id used by ``sms.send`` and
             ``sms.send_batch`` when the caller doesn't pass one.
         token_storage: Backend used to persist the bearer token. Defaults to
             in-memory storage if not given.
-        enable_token_refresh: When ``True`` (the default) a 401 triggers a
-            single ``PATCH /auth/refresh`` retry, falling back to fresh
-            login if refresh itself fails. Set to ``False`` to surface 401s
-            immediately as :class:`TokenExpired`.
+        enable_token_refresh: Controls the **post-401 refresh path only** —
+            initial login on first request is always performed. When
+            ``True`` (the default) a 401 triggers a single
+            ``PATCH /auth/refresh`` retry, falling back to fresh login if
+            refresh itself fails. Set to ``False`` to surface 401s
+            immediately as :class:`TokenExpired` (useful when paired with
+            a pre-set ``MemoryTokenStorage(initial=...)`` and you want
+            full control over token lifecycle).
+        max_retries: Number of automatic retries for transient failures.
+            Default ``0`` keeps behavior identical to prior versions. Each
+            retry uses exponential backoff (0.2s, 0.4s, …, capped at 5s).
+            5xx and read-timeouts are retried only for safe methods
+            (GET/HEAD/OPTIONS); pre-request connection errors are retried
+            for every method via the httpx transport layer.
+        allow_insecure_callback: When ``True``, permit ``http://`` callback
+            URLs. Defaults to ``False`` because Eskiz webhooks carry the
+            recipient phone and delivery status, and shouldn't ride
+            plaintext in production.
         logger: Logger used for refresh/retry/auth events. The SDK never
             logs tokens or passwords.
     """
@@ -83,6 +103,8 @@ class EskizSMS:
         from_whom: str = DEFAULT_FROM_WHOM,
         token_storage: TokenStorage | None = None,
         enable_token_refresh: bool = True,
+        max_retries: int = 0,
+        allow_insecure_callback: bool = False,
         logger: logging.Logger | None = None,
     ) -> None:
         config = Config(
@@ -94,6 +116,8 @@ class EskizSMS:
             from_whom=from_whom,
             token_storage=token_storage,
             enable_token_refresh=enable_token_refresh,
+            max_retries=max_retries,
+            allow_insecure_callback=allow_insecure_callback,
             logger=logger if logger is not None else logging.getLogger("eskiz"),
         )
         self._config = config

@@ -28,20 +28,34 @@ class RawResponse:
 _INVALID_CREDENTIALS_MESSAGES = frozenset({"Invalid credentials", "invalid_credentials"})
 _TOKEN_INVALID_STATUSES = frozenset({"token_invalid"})
 
+SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS"})
+"""HTTP methods that the SDK retries on 5xx / read timeout.
+
+POST/PATCH/DELETE are excluded because their request body may have been
+processed even when the server failed to respond. The httpx transport's
+``retries=`` knob still handles pre-request connection errors for those.
+"""
+
+_RETRY_BASE_DELAY = 0.2
+_RETRY_MAX_DELAY = 5.0
+
+
+def retry_delay(attempt: int) -> float:
+    """Exponential backoff: 0.2, 0.4, 0.8, ... capped at 5s."""
+    return min(_RETRY_BASE_DELAY * (2**attempt), _RETRY_MAX_DELAY)
+
 
 def parse_httpx(response: httpx.Response) -> RawResponse:
     """Convert an :class:`httpx.Response` to a :class:`RawResponse`.
 
     Tolerates JSON, text, and CSV bodies; never raises on parse failure.
+    Tries JSON first regardless of content-type so misconfigured servers
+    (``text/json``, missing header, etc.) still parse correctly.
     """
-    content_type = response.headers.get("content-type", "").split(";", 1)[0].strip()
     data: dict[str, Any] | list[Any] | str
-    if content_type == "application/json":
-        try:
-            data = response.json()
-        except ValueError:
-            data = response.text
-    else:
+    try:
+        data = response.json()
+    except ValueError:
         data = response.text
     return RawResponse(status_code=response.status_code, data=data, headers=response.headers)
 
@@ -77,7 +91,10 @@ def raise_for_response(response: RawResponse) -> None:
         )
         status = None
 
-    if message in _INVALID_CREDENTIALS_MESSAGES:
+    if (
+        response.status_code == 401
+        and message in _INVALID_CREDENTIALS_MESSAGES
+    ):
         raise InvalidCredentials(message, status=status, status_code=response.status_code)
     if status in _TOKEN_INVALID_STATUSES:
         raise TokenInvalid(message, status=status, status_code=response.status_code)

@@ -135,6 +135,7 @@ class AsyncTokenManager:
         "_email",
         "_in_flight",
         "_lock",
+        "_lock_loop",
         "_log",
         "_login",
         "_password",
@@ -158,15 +159,25 @@ class AsyncTokenManager:
         self._refresh = refresh_fn
         self._log = logger
         # Lazy because the manager may be constructed outside an event loop.
+        # Both fields are bound to a specific loop; if the running loop
+        # changes (e.g. a fresh ``asyncio.run`` after a previous one ended)
+        # they are rebuilt — see :meth:`_ensure_lock`.
         self._lock: asyncio.Lock | None = None
+        self._lock_loop: asyncio.AbstractEventLoop | None = None
         self._in_flight: asyncio.Future[str] | None = None
 
     def _ensure_lock(self) -> asyncio.Lock:
         # Safe without locking: there is no ``await`` between the read and
         # the assignment, so the asyncio scheduler cannot interleave another
-        # coroutine here on a single event loop.
-        if self._lock is None:
+        # coroutine here on a single event loop. When the running loop
+        # differs from the one the lock was created on, drop the old lock
+        # and any in-flight future — they belong to a closed loop and can
+        # never resolve here.
+        loop = asyncio.get_running_loop()
+        if self._lock is None or self._lock_loop is not loop:
             self._lock = asyncio.Lock()
+            self._lock_loop = loop
+            self._in_flight = None
         return self._lock
 
     async def get(self) -> str:

@@ -24,6 +24,8 @@ pytestmark = pytest.mark.integration
 
 TEST_FROM = "4546"
 DEFAULT_BODY = "Eskiz Test"
+STATUS_POLL_ATTEMPTS = 4
+STATUS_POLL_INTERVAL = 2.0
 
 
 def test_send_and_status_roundtrip(live_client: EskizSMS, test_phone: str) -> None:
@@ -47,9 +49,24 @@ def test_send_and_status_roundtrip(live_client: EskizSMS, test_phone: str) -> No
     assert result.id is not None
     assert result.status in {"waiting", "Waiting"}
 
-    # Give Eskiz a moment to materialise the message before fetching status.
-    time.sleep(2)
+    # Eskiz needs a moment to materialise the message; poll a few times
+    # rather than sleeping a fixed window so the happy path is fast and
+    # slow days don't flake the test.
+    detail: SmsStatusDetail | None = None
+    last_exc: EskizBadRequest | None = None
+    for _ in range(STATUS_POLL_ATTEMPTS):
+        time.sleep(STATUS_POLL_INTERVAL)
+        try:
+            detail = live_client.sms.status(result.id)
+            break
+        except EskizBadRequest as exc:
+            last_exc = exc
+            continue
 
-    detail = live_client.sms.status(result.id)
+    if detail is None:
+        raise AssertionError(
+            f"sms.status never returned a row after "
+            f"{STATUS_POLL_ATTEMPTS * STATUS_POLL_INTERVAL}s"
+        ) from last_exc
     assert isinstance(detail, SmsStatusDetail)
     assert detail.id is not None

@@ -36,18 +36,19 @@ def send(
     message: str,
     from_whom: str,
     callback_url: str | None = None,
+    allow_insecure_callback: bool = False,
 ) -> RequestPlan[SendResult]:
     body: dict[str, Any] = {
         "mobile_phone": normalize_phone(mobile_phone),
         "message": message,
         "from": from_whom,
     }
-    apply_callback(body, callback_url)
+    apply_callback(body, callback_url, allow_insecure=allow_insecure_callback)
     return RequestPlan(
         method="POST",
         path=ep.SEND_SMS,
         data=body,
-        parse=lambda r: SendResult.model_validate(r.data),
+        parse=_parse_send_result,
     )
 
 
@@ -58,6 +59,7 @@ def send_global(
     country_code: str,
     callback_url: str | None = None,
     unicode: bool = False,
+    allow_insecure_callback: bool = False,
 ) -> RequestPlan[SendResult]:
     body: dict[str, Any] = {
         "mobile_phone": normalize_phone(mobile_phone),
@@ -65,12 +67,12 @@ def send_global(
         "country_code": country_code,
         "unicode": "1" if unicode else "0",
     }
-    apply_callback(body, callback_url)
+    apply_callback(body, callback_url, allow_insecure=allow_insecure_callback)
     return RequestPlan(
         method="POST",
         path=ep.SEND_GLOBAL_SMS,
         data=body,
-        parse=lambda r: SendResult.model_validate(r.data),
+        parse=_parse_send_result,
     )
 
 
@@ -80,19 +82,32 @@ def send_batch(
     dispatch_id: int,
     from_whom: str,
     callback_url: str | None = None,
+    allow_insecure_callback: bool = False,
 ) -> RequestPlan[BatchSendResult]:
     body: dict[str, Any] = {
         "messages": normalize_batch_messages(messages),
         "from": from_whom,
         "dispatch_id": dispatch_id,
     }
-    apply_callback(body, callback_url)
+    apply_callback(body, callback_url, allow_insecure=allow_insecure_callback)
     return RequestPlan(
         method="POST",
         path=ep.SEND_BATCH_SMS,
         json=body,
-        parse=lambda r: BatchSendResult.model_validate(r.data),
+        parse=_parse_batch_send_result,
     )
+
+
+def _parse_send_result(r: RawResponse) -> SendResult:
+    if not isinstance(r.data, dict):
+        raise unexpected_shape(r.data, status_code=r.status_code)
+    return SendResult.model_validate(r.data)
+
+
+def _parse_batch_send_result(r: RawResponse) -> BatchSendResult:
+    if not isinstance(r.data, dict):
+        raise unexpected_shape(r.data, status_code=r.status_code)
+    return BatchSendResult.model_validate(r.data)
 
 
 def list_messages(
@@ -139,6 +154,9 @@ def list_by_dispatch(
     if status is not None:
         params["status"] = status
     if page_size is not None:
+        # Eskiz spells this with a dash in the query string for this endpoint
+        # only (see docs/eskiz.uz.postman_collection.json); list_messages uses
+        # snake_case `page_size` in the body. Don't "fix" without checking.
         params["page-size"] = page_size
 
     def parse(r: RawResponse) -> PaginatedMessages:

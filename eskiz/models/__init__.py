@@ -4,7 +4,6 @@ All models accept (but ignore) unknown fields so server additions don't
 break the SDK. Phone numbers are normalized to digits-only on input.
 """
 
-from eskiz.models.common import EnvelopeStatus, ResponseEnvelope
 from eskiz.models.reports import (
     DispatchExpense,
     LimitInfo,
@@ -41,7 +40,6 @@ __all__ = [
     "BatchSendResult",
     "DispatchExpense",
     "DispatchStatusRow",
-    "EnvelopeStatus",
     "LimitInfo",
     "LocalPriceEntry",
     "NormalizerCharacter",
@@ -49,7 +47,6 @@ __all__ = [
     "PriceEntry",
     "PriceList",
     "RangeExpense",
-    "ResponseEnvelope",
     "SendResult",
     "SmsCheckInfo",
     "SmsCheckResult",

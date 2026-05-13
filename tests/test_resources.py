@@ -190,3 +190,112 @@ def test_invalid_callback_url_raises_validation_error(client: EskizSMS) -> None:
 
     with pytest.raises(EskizValidationError):
         client.sms.send(mobile_phone="998991234567", message="hi", callback_url="not a url")
+
+
+def test_http_callback_url_rejected_by_default(client: EskizSMS) -> None:
+    """Plain http:// callbacks must be rejected unless the client opts in."""
+    from eskiz import EskizValidationError
+
+    with pytest.raises(EskizValidationError, match="https"):
+        client.sms.send(
+            mobile_phone="998991234567", message="hi", callback_url="http://example.com/cb"
+        )
+
+
+def test_http_callback_url_allowed_with_opt_in() -> None:
+    """allow_insecure_callback=True permits http:// (for staging/local use)."""
+    with (
+        respx.mock() as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            allow_insecure_callback=True,
+        ) as client,
+    ):
+        mock_login(mock)
+        send = mock.post(f"{BASE_URL}/message/sms/send").mock(
+            return_value=Response(200, json={"id": "x", "status": "waiting"})
+        )
+
+        client.sms.send(
+            mobile_phone="998991234567",
+            message="hi",
+            from_whom="4546",
+            callback_url="http://example.com/cb",
+        )
+
+        body = send.calls[0].request.content.decode()
+        assert "callback_url=http%3A" in body
+
+
+def test_batch_message_missing_to_raises_validation_error(client: EskizSMS) -> None:
+    """Local validation: missing 'to' key in a batch dict surfaces clearly."""
+    from eskiz import EskizValidationError
+
+    with pytest.raises(EskizValidationError, match="'to'"):
+        client.sms.send_batch(
+            messages=[{"user_sms_id": "s1", "text": "x"}],  # type: ignore[typeddict-item]
+            dispatch_id=42,
+        )
+
+
+def test_network_error_surfaces_as_eskiz_http_error(client: EskizSMS) -> None:
+    """A transport-level failure must wrap into EskizHTTPError, not leak httpx."""
+    import httpx
+
+    from eskiz import EskizHTTPError
+
+    with respx.mock() as mock:
+        mock_login(mock)
+        mock.get(f"{BASE_URL}/auth/user").mock(side_effect=httpx.ConnectError("boom"))
+
+        with pytest.raises(EskizHTTPError):
+            client.auth.me()
+
+
+def test_safe_method_retries_on_5xx() -> None:
+    """A 500 on a GET must be retried up to max_retries times."""
+    with (
+        respx.mock() as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            max_retries=2,
+        ) as client,
+    ):
+        mock_login(mock)
+        responses = [
+            Response(500, json={"message": "server error"}),
+            Response(500, json={"message": "server error"}),
+            Response(200, json={"status": "success", "data": {"id": 1, "email": "u@e.com"}}),
+        ]
+        me = mock.get(f"{BASE_URL}/auth/user").mock(side_effect=responses)
+
+        user = client.auth.me()
+        assert user.id == 1
+        assert me.call_count == 3
+
+
+def test_unsafe_method_does_not_retry_on_5xx() -> None:
+    """A 500 on POST must not be retried by the SDK loop, even with max_retries set."""
+    from eskiz import EskizBadRequest
+
+    with (
+        respx.mock() as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            max_retries=3,
+        ) as client,
+    ):
+        mock_login(mock)
+        send = mock.post(f"{BASE_URL}/message/sms/send").mock(
+            return_value=Response(500, json={"message": "server error"})
+        )
+
+        with pytest.raises(EskizBadRequest):
+            client.sms.send(mobile_phone="998991234567", message="hi", from_whom="4546")
+        assert send.call_count == 1, "POST 500 should not be retried in the SDK loop"

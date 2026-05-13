@@ -35,4 +35,6 @@ class Config:
     from_whom: str = DEFAULT_FROM_WHOM
     token_storage: TokenStorage | None = None
     enable_token_refresh: bool = True
+    max_retries: int = 0
+    allow_insecure_callback: bool = False
     logger: logging.Logger = field(default_factory=lambda: logging.getLogger("eskiz"))

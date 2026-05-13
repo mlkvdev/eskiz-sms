@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime
-
 from pydantic import Field
 
 from eskiz.models.common import BaseEskizModel
@@ -43,10 +41,16 @@ class SmscTotal(TotalByMonth):
 
 
 class RangeExpense(BaseEskizModel):
-    """One row from ``/report/total-by-range``."""
+    """One row from ``/report/total-by-range``.
 
-    start_date: date | datetime | str | None = None
-    to_date: date | datetime | str | None = None
+    Dates are kept as raw strings — Eskiz returns them in
+    ``"YYYY-MM-DD HH:MM"`` form, which is the same string you passed in,
+    so callers already know the shape. Parsing back to a ``datetime``
+    would add a round-trip without buying anything.
+    """
+
+    start_date: str | None = None
+    to_date: str | None = None
     parts: int | None = None
     spent: int | None = None
     total_parts: int | None = None

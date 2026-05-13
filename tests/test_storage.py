@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import stat
+import sys
 from pathlib import Path
 
+import pytest
 import respx
 from httpx import Response
 
@@ -49,6 +52,36 @@ def test_dotenv_storage_custom_key(tmp_path: Path) -> None:
     s.set("hello")
     assert "MY_TOKEN=" in env.read_text()
     assert s.get() == "hello"
+
+
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="POSIX file modes are meaningless on Windows"
+)
+def test_dotenv_storage_chmods_only_on_creation(tmp_path: Path) -> None:
+    """Newly created token files are locked to 0o600; existing files keep their perms.
+
+    The latter matters when the caller points this backend at an existing
+    .env holding other env vars — we mustn't trample on perms the user
+    set deliberately (e.g. 0o644 so a non-root systemd unit can read it).
+    """
+    new_env = tmp_path / "new.env"
+    s = DotenvTokenStorage(env_path=new_env)
+    s.set("sekret")
+    assert stat.S_IMODE(new_env.stat().st_mode) == 0o600
+
+    # An existing file with looser perms must be left alone.
+    shared = tmp_path / "shared.env"
+    shared.write_text("OTHER=value\n")
+    shared.chmod(0o644)
+    s2 = DotenvTokenStorage(env_path=shared)
+    s2.set("tok")
+    assert stat.S_IMODE(shared.stat().st_mode) == 0o644, (
+        "must not tighten perms on a pre-existing file"
+    )
+    contents = shared.read_text()
+    assert "OTHER=value" in contents
+    assert "ESKIZ_TOKEN=" in contents and "tok" in contents
+    assert s2.get() == "tok"
 
 
 def test_dotenv_storage_clear_no_file(tmp_path: Path) -> None:

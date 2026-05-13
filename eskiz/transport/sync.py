@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, Self
 
@@ -10,10 +11,12 @@ import httpx
 from eskiz.config import Config
 from eskiz.exceptions import TokenInvalid
 from eskiz.transport.base import (
+    SAFE_METHODS,
     RawResponse,
     is_token_expired,
     parse_httpx,
     raise_for_response,
+    retry_delay,
     wrap_httpx_error,
 )
 
@@ -28,7 +31,11 @@ class SyncTransport:
 
     def __init__(self, config: Config) -> None:
         self._config = config
-        self._client = httpx.Client(base_url=config.base_url, timeout=config.timeout)
+        self._client = httpx.Client(
+            base_url=config.base_url,
+            timeout=config.timeout,
+            transport=httpx.HTTPTransport(retries=max(config.max_retries, 0)),
+        )
         self._token_manager: SyncTokenManager | None = None
 
     def attach_token_manager(self, manager: SyncTokenManager) -> None:
@@ -60,16 +67,48 @@ class SyncTransport:
         json: Any = None,
         params: dict[str, Any] | None = None,
     ) -> RawResponse:
-        """Issue a single HTTP call without auth-retry semantics."""
+        """Issue a single HTTP call without auth-retry semantics.
+
+        For safe methods (GET/HEAD/OPTIONS) a read timeout or 5xx response
+        is retried up to ``config.max_retries`` times with exponential
+        backoff. Unsafe methods (POST/PATCH/DELETE) are never retried here
+        — only at the httpx transport layer, which retries pre-request
+        connection errors so no request body is sent twice.
+        """
         headers = {"Authorization": f"Bearer {token}"} if token else None
-        try:
-            response = self._client.request(
-                method, path, data=data, json=json, params=params, headers=headers
-            )
-        except httpx.HTTPError as exc:
-            self._config.logger.debug("eskiz http error: %s %s: %s", method, path, exc)
-            raise wrap_httpx_error(exc) from exc
-        return parse_httpx(response)
+        max_attempts = (
+            self._config.max_retries + 1 if method.upper() in SAFE_METHODS else 1
+        )
+        for attempt in range(max_attempts):
+            is_last = attempt == max_attempts - 1
+            try:
+                response = self._client.request(
+                    method, path, data=data, json=json, params=params, headers=headers
+                )
+            except (httpx.ReadTimeout, httpx.WriteTimeout) as exc:
+                if is_last:
+                    self._config.logger.debug("eskiz http error: %s %s: %s", method, path, exc)
+                    raise wrap_httpx_error(exc) from exc
+                self._config.logger.debug(
+                    "eskiz retry %d/%d: %s %s: %s",
+                    attempt + 1, max_attempts - 1, method, path, exc,
+                )
+                time.sleep(retry_delay(attempt))
+                continue
+            except httpx.HTTPError as exc:
+                self._config.logger.debug("eskiz http error: %s %s: %s", method, path, exc)
+                raise wrap_httpx_error(exc) from exc
+
+            if 500 <= response.status_code < 600 and not is_last:
+                self._config.logger.debug(
+                    "eskiz retry %d/%d after HTTP %d: %s %s",
+                    attempt + 1, max_attempts - 1, response.status_code, method, path,
+                )
+                time.sleep(retry_delay(attempt))
+                continue
+            return parse_httpx(response)
+        # Unreachable: the loop either returns or raises on each iteration.
+        raise RuntimeError("retry loop exhausted")  # pragma: no cover
 
     def request_unauth(
         self,
