@@ -1,16 +1,16 @@
 [project]
 name = "eskiz-sms"
-version = "1.0.0"
+version = "1.0.1"
 description = "Modern Python SDK for the Eskiz.uz SMS gateway"
 readme = "README.md"
-license = { file = "License" }
+license = { file = "LICENSE" }
 authors = [
     { name = "Malikov", email = "mlkv.dev@gmail.com" },
 ]
 requires-python = ">=3.11"
 keywords = ["eskiz", "sms", "uzbekistan", "sms-gateway"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -56,7 +56,7 @@ include = [
     "/eskiz",
     "/README.md",
     "/CHANGELOG.md",
-    "/License",
+    "/LICENSE",
     "/pyproject.toml",
 ]
 
@@ -82,6 +82,14 @@ include = ["eskiz", "tests"]
 typeCheckingMode = "strict"
 pythonVersion = "3.11"
 reportMissingTypeStubs = false
+# Test files use respx callbacks with unannotated `request` params; that's
+# idiomatic for the library and not worth annotating every fixture.
+reportUnknownParameterType = false
+reportMissingParameterType = false
+reportUnknownArgumentType = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownLambdaType = false
 
 [tool.ty.environment]
 python-version = "3.11"

@@ -7,7 +7,7 @@ from pathlib import Path
 import respx
 from httpx import Response
 
-from eskiz import Config, DotenvTokenStorage, EskizSMS, MemoryTokenStorage
+from eskiz import DotenvTokenStorage, EskizSMS, MemoryTokenStorage
 
 from ._helpers import BASE_URL, mock_login
 
@@ -62,14 +62,15 @@ def test_client_uses_dotenv_storage(tmp_path: Path) -> None:
     """Client persists token to dotenv file on first login."""
     env = tmp_path / ".env"
     storage = DotenvTokenStorage(env_path=env)
-    cfg = Config(
-        email="u@e.com",
-        password="p",
-        base_url=BASE_URL,
-        token_storage=storage,
-    )
-
-    with respx.mock() as mock, EskizSMS(cfg) as client:
+    with (
+        respx.mock() as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            token_storage=storage,
+        ) as client,
+    ):
         login = mock_login(mock, token="tok-from-login")
         mock.get(f"{BASE_URL}/auth/user").mock(
             return_value=Response(
@@ -84,13 +85,15 @@ def test_client_uses_dotenv_storage(tmp_path: Path) -> None:
 
     # A second client with the same storage should reuse the cached token
     storage2 = DotenvTokenStorage(env_path=env)
-    cfg2 = Config(
-        email="u@e.com",
-        password="p",
-        base_url=BASE_URL,
-        token_storage=storage2,
-    )
-    with respx.mock(assert_all_called=False) as mock, EskizSMS(cfg2) as client2:
+    with (
+        respx.mock(assert_all_called=False) as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            token_storage=storage2,
+        ) as client2,
+    ):
         login2 = mock_login(mock, token="tok-not-used")
         mock.get(f"{BASE_URL}/auth/user").mock(
             return_value=Response(

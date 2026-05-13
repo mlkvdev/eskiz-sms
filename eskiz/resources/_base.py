@@ -2,7 +2,7 @@
 
 The executor takes a :class:`RequestPlan` and runs it, wrapping
 :class:`pydantic.ValidationError` from any plan parser as
-:class:`BadRequest` so the SDK's exception hierarchy can't be bypassed.
+:class:`EskizBadRequest` so the SDK's exception hierarchy can't be bypassed.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pydantic import ValidationError as PydanticValidationError
 
 from eskiz._protocol import RequestPlan
-from eskiz.exceptions import BadRequest
+from eskiz.exceptions import EskizBadRequest
 from eskiz.transport.base import RawResponse, raise_for_response
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ def _safe_parse(plan: RequestPlan[T], response: RawResponse) -> T:
         msg = str(exc)
         if len(msg) > _MAX_PARSE_ERROR:
             msg = msg[:_MAX_PARSE_ERROR] + "..."
-        raise BadRequest(
+        raise EskizBadRequest(
             f"Could not parse response: {msg}", status_code=response.status_code
         ) from exc
 
@@ -103,7 +103,7 @@ class AsyncExecutor:
         return _safe_parse(plan, response)
 
 
-class _SyncResource:
+class SyncResource:
     """Base for sync resources — holds executor and config."""
 
     __slots__ = ("_config", "_exec")
@@ -113,7 +113,7 @@ class _SyncResource:
         self._config = config
 
 
-class _AsyncResource:
+class AsyncResource:
     """Base for async resources — holds executor and config."""
 
     __slots__ = ("_config", "_exec")

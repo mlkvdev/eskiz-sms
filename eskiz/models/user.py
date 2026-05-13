@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from eskiz.models.common import _Base
+from eskiz.models.common import BaseEskizModel
 
 
-class User(_Base):
+class User(BaseEskizModel):
     """Authenticated user info from ``/auth/user``.
 
     Note: the API returns a ``password`` field (often empty) and other

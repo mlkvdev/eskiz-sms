@@ -14,6 +14,7 @@ from eskiz._protocol._helpers import (
     envelope_data,
     envelope_list_parser,
     normalize_batch_messages,
+    unexpected_shape,
 )
 from eskiz._validators import normalize_phone
 from eskiz.models import (
@@ -144,9 +145,9 @@ def list_by_dispatch(
         payload = r.data
         if isinstance(payload, dict) and "data" in payload:
             payload = payload["data"]
-        if isinstance(payload, dict):
-            return PaginatedMessages.model_validate(payload)
-        return PaginatedMessages(result=[])
+        if not isinstance(payload, dict):
+            raise unexpected_shape(payload, status_code=r.status_code)
+        return PaginatedMessages.model_validate(payload)
 
     return RequestPlan(
         method="POST",
@@ -176,17 +177,21 @@ def status(sms_id: str | int) -> RequestPlan[SmsStatusDetail]:
 
 def nicks() -> RequestPlan[list[str]]:
     def parse(r: RawResponse) -> list[str]:
-        return [str(x) for x in r.data] if isinstance(r.data, list) else []
+        if not isinstance(r.data, list):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        return [str(x) for x in r.data]
 
     return RequestPlan(method="GET", path=ep.NICK_ME, parse=parse)
 
 
 def normalize(message: str) -> RequestPlan[list[NormalizerCharacter]]:
     def parse(r: RawResponse) -> list[NormalizerCharacter]:
-        if isinstance(r.data, dict):
-            chars = r.data.get("special_characters", [])
-            return [NormalizerCharacter.model_validate(c) for c in chars]
-        return []
+        if not isinstance(r.data, dict):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        chars = r.data.get("special_characters", [])
+        if not isinstance(chars, list):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        return [NormalizerCharacter.model_validate(c) for c in chars]
 
     return RequestPlan(
         method="POST",

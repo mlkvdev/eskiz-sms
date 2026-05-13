@@ -16,23 +16,23 @@ from eskiz.models import (
     SmsCheckResult,
     SmsStatusDetail,
 )
-from eskiz.resources._base import _AsyncResource, _SyncResource
+from eskiz.resources._base import AsyncResource, SyncResource
 
 
-class SmsResource(_SyncResource):
+class SmsResource(SyncResource):
     def send(
         self,
         *,
         mobile_phone: str,
         message: str,
-        from_whom: str = "4546",
+        from_whom: str | None = None,
         callback_url: str | None = None,
     ) -> SendResult:
         return self._exec.run(
             _proto.send(
                 mobile_phone=mobile_phone,
                 message=message,
-                from_whom=from_whom,
+                from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
             )
         )
@@ -61,14 +61,14 @@ class SmsResource(_SyncResource):
         *,
         messages: list[BatchMessage] | list[dict[str, Any]],
         dispatch_id: int,
-        from_whom: str = "4546",
+        from_whom: str | None = None,
         callback_url: str | None = None,
     ) -> BatchSendResult:
         return self._exec.run(
             _proto.send_batch(
                 messages=messages,
                 dispatch_id=dispatch_id,
-                from_whom=from_whom,
+                from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
             )
         )
@@ -129,20 +129,20 @@ class SmsResource(_SyncResource):
         return self._exec.run(_proto.check(message))
 
 
-class AsyncSmsResource(_AsyncResource):
+class AsyncSmsResource(AsyncResource):
     async def send(
         self,
         *,
         mobile_phone: str,
         message: str,
-        from_whom: str = "4546",
+        from_whom: str | None = None,
         callback_url: str | None = None,
     ) -> SendResult:
         return await self._exec.run(
             _proto.send(
                 mobile_phone=mobile_phone,
                 message=message,
-                from_whom=from_whom,
+                from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
             )
         )
@@ -171,14 +171,14 @@ class AsyncSmsResource(_AsyncResource):
         *,
         messages: list[BatchMessage] | list[dict[str, Any]],
         dispatch_id: int,
-        from_whom: str = "4546",
+        from_whom: str | None = None,
         callback_url: str | None = None,
     ) -> BatchSendResult:
         return await self._exec.run(
             _proto.send_batch(
                 messages=messages,
                 dispatch_id=dispatch_id,
-                from_whom=from_whom,
+                from_whom=from_whom or self._config.from_whom,
                 callback_url=callback_url or self._config.callback_url,
             )
         )

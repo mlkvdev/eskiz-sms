@@ -12,6 +12,7 @@ from eskiz._protocol._helpers import (
     datetime_str,
     envelope_data,
     envelope_list_parser,
+    unexpected_shape,
 )
 from eskiz.models import (
     DispatchExpense,
@@ -36,8 +37,9 @@ def balance() -> RequestPlan[LimitInfo]:
 
 def prices() -> RequestPlan[PriceList]:
     def parse(r: RawResponse) -> PriceList:
-        payload = r.data if isinstance(r.data, dict) else {}
-        return PriceList.model_validate(payload)
+        if not isinstance(r.data, dict):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        return PriceList.model_validate(r.data)
 
     return RequestPlan(method="GET", path=ep.USER_PRICES, parse=parse)
 
@@ -126,19 +128,24 @@ def export(
         body["start"] = datetime_str(start)
     if end is not None:
         body["end"] = datetime_str(end)
+    def parse_export(r: RawResponse) -> str:
+        if not isinstance(r.data, str):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        return r.data
+
     return RequestPlan(
         method="POST",
         path=ep.MESSAGE_EXPORT,
         data=body,
         params={"status": status},
-        parse=lambda r: r.data if isinstance(r.data, str) else str(r.data),
+        parse=parse_export,
     )
 
 
 def logs(sms_id: str | int) -> RequestPlan[SmsLogResponse]:
     def parse(r: RawResponse) -> SmsLogResponse:
-        if isinstance(r.data, dict):
-            return SmsLogResponse.model_validate(r.data)
-        return SmsLogResponse(messages=[])
+        if not isinstance(r.data, dict):
+            raise unexpected_shape(r.data, status_code=r.status_code)
+        return SmsLogResponse.model_validate(r.data)
 
     return RequestPlan(method="GET", path=ep.sms_log(sms_id), parse=parse)

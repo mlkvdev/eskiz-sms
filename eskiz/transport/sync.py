@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from types import TracebackType
-from typing import Any, Self
+from typing import TYPE_CHECKING, Any, Self
 
 import httpx
 
@@ -17,6 +17,9 @@ from eskiz.transport.base import (
     wrap_httpx_error,
 )
 
+if TYPE_CHECKING:
+    from eskiz.auth.token import SyncTokenManager
+
 
 class SyncTransport:
     """Owns the :class:`httpx.Client` and performs requests."""
@@ -26,9 +29,9 @@ class SyncTransport:
     def __init__(self, config: Config) -> None:
         self._config = config
         self._client = httpx.Client(base_url=config.base_url, timeout=config.timeout)
-        self._token_manager: Any | None = None
+        self._token_manager: SyncTokenManager | None = None
 
-    def attach_token_manager(self, manager: Any) -> None:
+    def attach_token_manager(self, manager: SyncTokenManager) -> None:
         self._token_manager = manager
 
     def close(self) -> None:
@@ -64,6 +67,7 @@ class SyncTransport:
                 method, path, data=data, json=json, params=params, headers=headers
             )
         except httpx.HTTPError as exc:
+            self._config.logger.debug("eskiz http error: %s %s: %s", method, path, exc)
             raise wrap_httpx_error(exc) from exc
         return parse_httpx(response)
 
@@ -95,7 +99,8 @@ class SyncTransport:
             raise RuntimeError("Token manager not attached")
         token = self._token_manager.get()
         parsed = self.request_raw(method, path, token=token, data=data, json=json, params=params)
-        if is_token_expired(parsed) and self._config.max_token_refresh_retries > 0:
+        if is_token_expired(parsed) and self._config.enable_token_refresh:
+            self._config.logger.debug("eskiz 401 on %s %s; refreshing token", method, path)
             token = self._token_manager.refresh_after_failure(token)
             parsed = self.request_raw(
                 method, path, token=token, data=data, json=json, params=params

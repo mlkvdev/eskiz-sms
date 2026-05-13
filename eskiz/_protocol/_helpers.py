@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, TypeVar
 
 from eskiz._validators import normalize_phone, validate_callback_url
-from eskiz.exceptions import BadRequest
+from eskiz.exceptions import EskizBadRequest
 from eskiz.models import BatchMessage
 from eskiz.transport.base import RawResponse
 
@@ -23,25 +23,41 @@ def datetime_str(value: datetime | str) -> str:
     return value
 
 
-def envelope_data(payload: Any) -> Any:
-    """Pull ``data`` out of an envelope or raise :class:`BadRequest`."""
-    if isinstance(payload, dict) and "data" in payload:
-        return payload["data"]
+def _truncate(payload: Any) -> str:
     snippet = repr(payload)
     if len(snippet) > _MAX_ERROR_PAYLOAD:
         snippet = snippet[:_MAX_ERROR_PAYLOAD] + "..."
-    raise BadRequest(f"Unexpected response shape: {snippet}")
+    return snippet
+
+
+def unexpected_shape(payload: Any, *, status_code: int | None = None) -> EskizBadRequest:
+    """Build an :class:`EskizBadRequest` describing an unparseable response."""
+    return EskizBadRequest(
+        f"Unexpected response shape: {_truncate(payload)}", status_code=status_code
+    )
+
+
+def envelope_data(payload: Any) -> Any:
+    """Pull ``data`` out of an envelope or raise :class:`EskizBadRequest`."""
+    if isinstance(payload, dict) and "data" in payload:
+        return payload["data"]
+    raise EskizBadRequest(f"Unexpected response shape: {_truncate(payload)}")
 
 
 def extract_token(response: RawResponse) -> str:
     """Pull the bearer token out of an auth/login or auth/refresh response."""
     payload = response.data
     if not isinstance(payload, dict):
-        raise BadRequest("Unexpected auth response", status_code=response.status_code)
+        raise EskizBadRequest("Unexpected auth response", status_code=response.status_code)
     data = payload.get("data")
     if not isinstance(data, dict) or "token" not in data:
-        raise BadRequest("Auth response missing token", status_code=response.status_code)
-    return str(data["token"])
+        raise EskizBadRequest("Auth response missing token", status_code=response.status_code)
+    token = data["token"]
+    if not isinstance(token, str):
+        raise EskizBadRequest(
+            "Auth response token is not a string", status_code=response.status_code
+        )
+    return token
 
 
 def bool_flag(value: bool | None) -> str | None:
@@ -76,7 +92,7 @@ def envelope_list_parser(item: Callable[[Any], T]) -> Callable[[RawResponse], li
     def parse(r: RawResponse) -> list[T]:
         rows = envelope_data(r.data)
         if not isinstance(rows, list):
-            return []
+            raise unexpected_shape(rows, status_code=r.status_code)
         return [item(row) for row in rows]
 
     return parse

@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from types import TracebackType
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from eskiz._protocol import auth as _auth_proto
 from eskiz.auth.storage import MemoryTokenStorage
 from eskiz.auth.token import AsyncTokenManager
-from eskiz.config import Config
+from eskiz.config import DEFAULT_BASE_URL, DEFAULT_FROM_WHOM, DEFAULT_TIMEOUT, Config
 from eskiz.exceptions import InvalidCredentials, TokenExpired
 from eskiz.resources import (
     AsyncAuthResource,
@@ -18,6 +19,9 @@ from eskiz.resources import (
 )
 from eskiz.resources._base import AsyncExecutor
 from eskiz.transport.aio import AsyncTransport
+
+if TYPE_CHECKING:
+    from eskiz.auth.storage import TokenStorage
 
 
 async def _login(executor: AsyncExecutor, email: str, password: str) -> str:
@@ -31,7 +35,7 @@ async def _login(executor: AsyncExecutor, email: str, password: str) -> str:
 
 
 class AsyncEskizSMS:
-    """Asynchronous client for the Eskiz SMS gateway."""
+    """Asynchronous client for the Eskiz SMS gateway. See :class:`EskizSMS` for argument docs."""
 
     __slots__ = (
         "_config",
@@ -44,7 +48,30 @@ class AsyncEskizSMS:
         "templates",
     )
 
-    def __init__(self, config: Config) -> None:
+    def __init__(
+        self,
+        *,
+        email: str,
+        password: str,
+        base_url: str = DEFAULT_BASE_URL,
+        timeout: float = DEFAULT_TIMEOUT,
+        callback_url: str | None = None,
+        from_whom: str = DEFAULT_FROM_WHOM,
+        token_storage: TokenStorage | None = None,
+        enable_token_refresh: bool = True,
+        logger: logging.Logger | None = None,
+    ) -> None:
+        config = Config(
+            email=email,
+            password=password,
+            base_url=base_url,
+            timeout=timeout,
+            callback_url=callback_url,
+            from_whom=from_whom,
+            token_storage=token_storage,
+            enable_token_refresh=enable_token_refresh,
+            logger=logger if logger is not None else logging.getLogger("eskiz"),
+        )
         self._config = config
         self._transport = AsyncTransport(config)
         self._executor = AsyncExecutor(self._transport)
@@ -56,6 +83,7 @@ class AsyncEskizSMS:
             storage=storage,
             login_fn=lambda email, pw: _login(self._executor, email, pw),
             refresh_fn=lambda token: self._executor.run_with_token(_auth_proto.refresh(), token),
+            logger=config.logger,
         )
         self._transport.attach_token_manager(self._tokens)
 

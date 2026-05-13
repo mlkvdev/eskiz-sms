@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from eskiz.models.common import _Base
+from eskiz.models.common import BaseEskizModel
 
 
-class Template(_Base):
+class Template(BaseEskizModel):
     """SMS template record from ``/user/templates``."""
 
     id: int
@@ -14,13 +14,13 @@ class Template(_Base):
     status: str | None = None
 
 
-class TemplateCreated(_Base):
+class TemplateCreated(BaseEskizModel):
     """Response from ``POST /user/template`` — bare ``{template}``."""
 
     template: str
 
 
-class TemplateList(_Base):
+class TemplateList(BaseEskizModel):
     """``GET /user/templates`` response shape."""
 
     success: bool

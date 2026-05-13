@@ -5,11 +5,18 @@ free of optional installs. Use :class:`DotenvTokenStorage` only after
 installing the ``dotenv`` extra::
 
     pip install "eskiz-sms[dotenv]"
+
+``DotenvTokenStorage`` performs blocking file I/O under a per-instance lock.
+That is fine for the sync client; under ``AsyncEskizSMS`` each ``get``/``set``
+briefly blocks the event loop while the file is read or rewritten. For a
+token that effectively never changes between processes this is acceptable;
+high-fanout deployments should plug in a Redis- or DB-backed storage.
 """
 
 from __future__ import annotations
 
 import threading
+from importlib.util import find_spec
 from pathlib import Path
 
 DEFAULT_ENV_PATH = ".env"
@@ -32,13 +39,11 @@ class DotenvTokenStorage:
         env_path: str | Path = DEFAULT_ENV_PATH,
         key: str = DEFAULT_KEY,
     ) -> None:
-        try:
-            import dotenv  # noqa: F401
-        except ImportError as exc:
+        if find_spec("dotenv") is None:
             raise ImportError(
                 "DotenvTokenStorage requires python-dotenv. "
                 "Install with: pip install 'eskiz-sms[dotenv]'"
-            ) from exc
+            )
         self._env_path = str(env_path)
         self._key = key
         self._lock = threading.Lock()

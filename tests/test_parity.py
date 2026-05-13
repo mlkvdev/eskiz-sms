@@ -8,7 +8,7 @@ import inspect
 def _public_methods(obj_type: type) -> set[str]:
     return {
         name
-        for name, member in inspect.getmembers(obj_type, predicate=inspect.isfunction)
+        for name, _ in inspect.getmembers(obj_type, predicate=inspect.isfunction)
         if not name.startswith("_")
     }
 

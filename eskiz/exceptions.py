@@ -1,10 +1,10 @@
 """Exception hierarchy for the Eskiz SDK.
 
 All SDK errors derive from :class:`EskizError`. Network and protocol issues
-become :class:`HTTPError`; auth issues become :class:`AuthError` (with
+become :class:`EskizHTTPError`; auth issues become :class:`AuthError` (with
 :class:`InvalidCredentials`, :class:`TokenExpired`, :class:`TokenInvalid` as
-subclasses); API-side rejections become :class:`BadRequest`. Local input
-validation surfaces as :class:`ValidationError`.
+subclasses); API-side rejections become :class:`EskizBadRequest`. Local
+input validation surfaces as :class:`EskizValidationError`.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ class EskizError(Exception):
         self.status_code = status_code
 
     def __str__(self) -> str:
-        parts = [self.message]
+        parts = [f"{type(self).__name__}: {self.message}"]
         if self.status_code is not None:
             parts.append(f"http={self.status_code}")
         if self.status is not None:
@@ -34,7 +34,7 @@ class EskizError(Exception):
         return " ".join(parts)
 
 
-class HTTPError(EskizError):
+class EskizHTTPError(EskizError):
     """Network, TLS, or transport-layer failure."""
 
 
@@ -54,9 +54,9 @@ class TokenInvalid(AuthError):
     """Token is rejected by the server (revoked, malformed, etc.)."""
 
 
-class BadRequest(EskizError):
+class EskizBadRequest(EskizError):
     """Server returned a non-success status with an error payload."""
 
 
-class ValidationError(EskizError):
+class EskizValidationError(EskizError):
     """Local input failed validation before the request was sent."""

@@ -6,16 +6,16 @@ from datetime import date, datetime
 
 from pydantic import Field
 
-from eskiz.models.common import _Base
+from eskiz.models.common import BaseEskizModel
 
 
-class LimitInfo(_Base):
+class LimitInfo(BaseEskizModel):
     """``/user/get-limit`` response — current balance."""
 
     balance: float
 
 
-class Total(_Base):
+class Total(BaseEskizModel):
     """One row from ``/user/totals``."""
 
     status: str
@@ -23,7 +23,7 @@ class Total(_Base):
     packets: int
 
 
-class TotalByMonth(_Base):
+class TotalByMonth(BaseEskizModel):
     """One row from ``/report/total-by-month``."""
 
     year: int
@@ -42,7 +42,7 @@ class SmscTotal(TotalByMonth):
     smsc_id: int
 
 
-class RangeExpense(_Base):
+class RangeExpense(BaseEskizModel):
     """One row from ``/report/total-by-range``."""
 
     start_date: date | datetime | str | None = None
@@ -53,7 +53,7 @@ class RangeExpense(_Base):
     total_spent: int | None = None
 
 
-class DispatchExpense(_Base):
+class DispatchExpense(BaseEskizModel):
     """One row from ``/report/total-by-dispatch``."""
 
     dispatch_id: int
@@ -61,7 +61,7 @@ class DispatchExpense(_Base):
     spent: int | None = None
 
 
-class PriceEntry(_Base):
+class PriceEntry(BaseEskizModel):
     """One country in the global pricing list."""
 
     code: str
@@ -71,7 +71,7 @@ class PriceEntry(_Base):
     price: int | float
 
 
-class LocalPriceEntry(_Base):
+class LocalPriceEntry(BaseEskizModel):
     """One SMSC entry in the local pricing list.
 
     Local rows have a different shape than global ones — they are keyed by
@@ -84,7 +84,7 @@ class LocalPriceEntry(_Base):
     ad_price: int | float | None = None
 
 
-class PriceList(_Base):
+class PriceList(BaseEskizModel):
     """``/user/prices`` response."""
 
     global_: list[PriceEntry] | None = Field(default=None, alias="global")

@@ -9,14 +9,14 @@ from __future__ import annotations
 
 from eskiz._protocol import auth as _proto
 from eskiz.models import User
-from eskiz.resources._base import _AsyncResource, _SyncResource
+from eskiz.resources._base import AsyncResource, SyncResource
 
 
-class AuthResource(_SyncResource):
+class AuthResource(SyncResource):
     def me(self) -> User:
         return self._exec.run(_proto.me())
 
 
-class AsyncAuthResource(_AsyncResource):
+class AsyncAuthResource(AsyncResource):
     async def me(self) -> User:
         return await self._exec.run(_proto.me())

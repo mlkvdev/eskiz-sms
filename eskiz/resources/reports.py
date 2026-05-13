@@ -15,10 +15,10 @@ from eskiz.models import (
     Total,
     TotalByMonth,
 )
-from eskiz.resources._base import _AsyncResource, _SyncResource
+from eskiz.resources._base import AsyncResource, SyncResource
 
 
-class ReportsResource(_SyncResource):
+class ReportsResource(SyncResource):
     def balance(self) -> LimitInfo:
         return self._exec.run(_proto.balance())
 
@@ -74,7 +74,7 @@ class ReportsResource(_SyncResource):
         return self._exec.run(_proto.logs(sms_id))
 
 
-class AsyncReportsResource(_AsyncResource):
+class AsyncReportsResource(AsyncResource):
     async def balance(self) -> LimitInfo:
         return await self._exec.run(_proto.balance())
 

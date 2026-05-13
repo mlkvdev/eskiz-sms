@@ -23,10 +23,11 @@ from __future__ import annotations
 import os
 from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-from eskiz import AsyncEskizSMS, Config, EskizSMS
+from eskiz import AsyncEskizSMS, EskizSMS
 
 ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env.integration"
 
@@ -52,22 +53,24 @@ def _require(name: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def integration_config() -> Config:
-    email = _require("ESKIZ_EMAIL")
-    password = _require("ESKIZ_PASSWORD")
-    base_url = os.environ.get("ESKIZ_BASE_URL", "https://notify.eskiz.uz/api")
-    return Config(email=email, password=password, base_url=base_url, timeout=20.0)
+def integration_kwargs() -> dict[str, Any]:
+    return {
+        "email": _require("ESKIZ_EMAIL"),
+        "password": _require("ESKIZ_PASSWORD"),
+        "base_url": os.environ.get("ESKIZ_BASE_URL", "https://notify.eskiz.uz/api"),
+        "timeout": 20.0,
+    }
 
 
 @pytest.fixture
-def live_client(integration_config: Config) -> Iterator[EskizSMS]:
-    with EskizSMS(integration_config) as c:
+def live_client(integration_kwargs: dict[str, Any]) -> Iterator[EskizSMS]:
+    with EskizSMS(**integration_kwargs) as c:
         yield c
 
 
 @pytest.fixture
-async def live_aclient(integration_config: Config) -> AsyncIterator[AsyncEskizSMS]:
-    async with AsyncEskizSMS(integration_config) as c:
+async def live_aclient(integration_kwargs: dict[str, Any]) -> AsyncIterator[AsyncEskizSMS]:
+    async with AsyncEskizSMS(**integration_kwargs) as c:
         yield c
 
 

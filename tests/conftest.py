@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from eskiz import AsyncEskizSMS, Config, EskizSMS
+from eskiz import AsyncEskizSMS, EskizSMS
 
-BASE_URL = "https://notify.eskiz.uz/api"
+from ._helpers import BASE_URL
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -30,17 +30,12 @@ def pytest_collection_modifyitems(
 
 
 @pytest.fixture
-def config() -> Config:
-    return Config(email="user@example.com", password="hunter2", base_url=BASE_URL)
-
-
-@pytest.fixture
-def client(config: Config):
-    with EskizSMS(config) as c:
+def client():
+    with EskizSMS(email="user@example.com", password="hunter2", base_url=BASE_URL) as c:
         yield c
 
 
 @pytest.fixture
-async def aclient(config: Config):
-    async with AsyncEskizSMS(config) as c:
+async def aclient():
+    async with AsyncEskizSMS(email="user@example.com", password="hunter2", base_url=BASE_URL) as c:
         yield c

@@ -8,8 +8,8 @@ from typing import Any
 import httpx
 
 from eskiz.exceptions import (
-    BadRequest,
-    HTTPError,
+    EskizBadRequest,
+    EskizHTTPError,
     InvalidCredentials,
     TokenExpired,
     TokenInvalid,
@@ -83,9 +83,9 @@ def raise_for_response(response: RawResponse) -> None:
         raise TokenInvalid(message, status=status, status_code=response.status_code)
     if response.status_code == 401:
         raise TokenExpired(message, status=status, status_code=response.status_code)
-    raise BadRequest(message, status=status, status_code=response.status_code)
+    raise EskizBadRequest(message, status=status, status_code=response.status_code)
 
 
-def wrap_httpx_error(exc: httpx.HTTPError) -> HTTPError:
-    """Translate an httpx transport error to :class:`HTTPError`."""
-    return HTTPError(str(exc) or exc.__class__.__name__)
+def wrap_httpx_error(exc: httpx.HTTPError) -> EskizHTTPError:
+    """Translate an httpx transport error to :class:`EskizHTTPError`."""
+    return EskizHTTPError(str(exc) or exc.__class__.__name__)

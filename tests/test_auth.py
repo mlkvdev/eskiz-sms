@@ -6,7 +6,8 @@ import pytest
 import respx
 from httpx import Response
 
-from eskiz import AsyncEskizSMS, Config, EskizSMS, InvalidCredentials, TokenInvalid
+from eskiz import AsyncEskizSMS, EskizSMS, InvalidCredentials, TokenInvalid
+from eskiz.config import Config
 
 from ._helpers import BASE_URL, mock_login, mock_refresh
 
@@ -151,7 +152,7 @@ async def test_async_login_and_refresh(aclient: AsyncEskizSMS) -> None:
 
 
 def test_password_not_in_config_repr() -> None:
-    """C1: password must be redacted from repr/str of Config."""
+    """C1: password must be redacted from repr/str of the internal config."""
     cfg = Config(email="a@b.c", password="super-secret")
     assert "super-secret" not in repr(cfg)
     assert "super-secret" not in str(cfg)

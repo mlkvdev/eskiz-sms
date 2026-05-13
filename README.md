@@ -29,11 +29,9 @@ pip install "eskiz-sms[dotenv]"   # for DotenvTokenStorage
 ## Quickstart
 
 ```python
-from eskiz import Config, EskizSMS
+from eskiz import EskizSMS
 
-config = Config(email="you@example.com", password="your-password")
-
-with EskizSMS(config) as client:
+with EskizSMS(email="you@example.com", password="your-password") as client:
     result = client.sms.send(
         mobile_phone="998901234567",
         message="Hello from Eskiz!",
@@ -46,11 +44,10 @@ with EskizSMS(config) as client:
 
 ```python
 import asyncio
-from eskiz import AsyncEskizSMS, Config
+from eskiz import AsyncEskizSMS
 
 async def main() -> None:
-    config = Config(email="you@example.com", password="your-password")
-    async with AsyncEskizSMS(config) as client:
+    async with AsyncEskizSMS(email="you@example.com", password="your-password") as client:
         result = await client.sms.send(
             mobile_phone="998901234567",
             message="Hello!",
@@ -110,10 +107,10 @@ signature on the sync and async clients.
 ## Sending a batch
 
 ```python
-from eskiz import EskizSMS, Config
+from eskiz import EskizSMS
 from eskiz.models import BatchMessage
 
-with EskizSMS(Config(email=..., password=...)) as client:
+with EskizSMS(email=..., password=...) as client:
     result = client.sms.send_batch(
         dispatch_id=42,
         messages=[
@@ -135,19 +132,17 @@ client.sms.send_batch(
 
 ## Token storage
 
-Tokens are cached in memory by default. To persist across runs, supply a
-`TokenStorage` to `Config`:
+Tokens are cached in memory by default. To persist across runs, pass a
+`TokenStorage` to the client:
 
 ```python
-from eskiz import Config, DotenvTokenStorage, EskizSMS
+from eskiz import DotenvTokenStorage, EskizSMS
 
-config = Config(
+with EskizSMS(
     email="you@example.com",
     password="your-password",
     token_storage=DotenvTokenStorage(env_path=".env"),
-)
-
-with EskizSMS(config) as client:
+) as client:
     client.sms.send(mobile_phone="998901234567", message="Hi")
 # Token written to .env; next run reuses it without re-logging in.
 ```
@@ -173,10 +168,11 @@ simultaneously.
 
 ## Default callback URL
 
-Set once on the `Config` and every send uses it unless overridden per-call:
+Pass `callback_url=` to the client and every send uses it unless overridden
+per-call:
 
 ```python
-config = Config(
+client = EskizSMS(
     email="you@example.com",
     password="your-password",
     callback_url="https://your-app.com/eskiz/callback",
@@ -189,23 +185,27 @@ All errors derive from `EskizError`:
 
 ```
 EskizError
-├── HTTPError              network / TLS / transport failure
+├── EskizHTTPError         network / TLS / transport failure
 ├── AuthError
 │   ├── InvalidCredentials login email or password is wrong
 │   ├── TokenExpired       (rarely surfaced; auto-handled)
 │   └── TokenInvalid       token revoked or refresh failed
-├── BadRequest             API rejected the request (validation, etc.)
-└── ValidationError        local input failed validation (bad URL, ...)
+├── EskizBadRequest        API rejected the request (validation, etc.)
+└── EskizValidationError   local input failed validation (bad URL, ...)
 ```
 
+The `Eskiz*` prefix on the exception names is deliberate — `BadRequest`,
+`HTTPError`, and `ValidationError` collide with web frameworks, urllib,
+and pydantic respectively.
+
 ```python
-from eskiz import EskizSMS, InvalidCredentials, BadRequest
+from eskiz import EskizBadRequest, EskizSMS, InvalidCredentials
 
 try:
     client.sms.send(mobile_phone="998901234567", message="Hi")
 except InvalidCredentials:
     print("check your email/password")
-except BadRequest as e:
+except EskizBadRequest as e:
     print(f"API error: {e.message} (status={e.status_code})")
 ```
 
@@ -213,8 +213,8 @@ except BadRequest as e:
 
 | v0.x                                     | v1.0                                       |
 | ---------------------------------------- | ------------------------------------------ |
-| `from eskiz_sms import EskizSMS`         | `from eskiz import EskizSMS, Config`       |
-| `EskizSMS(email, password, save_token=True)` | `EskizSMS(Config(email=, password=, token_storage=DotenvTokenStorage()))` |
+| `from eskiz_sms import EskizSMS`         | `from eskiz import EskizSMS`               |
+| `EskizSMS(email, password, save_token=True)` | `EskizSMS(email=, password=, token_storage=DotenvTokenStorage())` |
 | `eskiz.send_sms(...)`                    | `client.sms.send(...)`                     |
 | `eskiz.send_global_sms(...)`             | `client.sms.send_global(...)`              |
 | `eskiz.send_batch(...)`                  | `client.sms.send_batch(...)`               |

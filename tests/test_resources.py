@@ -58,15 +58,15 @@ def test_sms_send_batch_uses_json(client: EskizSMS) -> None:
 
 
 def test_sms_send_callback_default_from_config() -> None:
-    from eskiz import Config
-
-    cfg = Config(
-        email="u@e.com",
-        password="p",
-        base_url=BASE_URL,
-        callback_url="https://example.com/cb",
-    )
-    with respx.mock() as mock, EskizSMS(cfg) as client:
+    with (
+        respx.mock() as mock,
+        EskizSMS(
+            email="u@e.com",
+            password="p",
+            base_url=BASE_URL,
+            callback_url="https://example.com/cb",
+        ) as client,
+    ):
         mock_login(mock)
         send = mock.post(f"{BASE_URL}/message/sms/send").mock(
             return_value=Response(200, json={"id": "x", "status": "waiting"})
@@ -168,8 +168,8 @@ def test_templates_list_all(client: EskizSMS) -> None:
 
 
 def test_validation_error_wrapped_as_bad_request(client: EskizSMS) -> None:
-    """H5: pydantic.ValidationError must be re-raised as BadRequest, not leak."""
-    from eskiz import BadRequest
+    """H5: pydantic.ValidationError must be re-raised as EskizBadRequest, not leak."""
+    from eskiz import EskizBadRequest
 
     with respx.mock() as mock:
         mock_login(mock)
@@ -181,12 +181,12 @@ def test_validation_error_wrapped_as_bad_request(client: EskizSMS) -> None:
             )
         )
 
-        with pytest.raises(BadRequest):
+        with pytest.raises(EskizBadRequest):
             client.auth.me()
 
 
 def test_invalid_callback_url_raises_validation_error(client: EskizSMS) -> None:
-    from eskiz import ValidationError
+    from eskiz import EskizValidationError
 
-    with pytest.raises(ValidationError):
+    with pytest.raises(EskizValidationError):
         client.sms.send(mobile_phone="998991234567", message="hi", callback_url="not a url")

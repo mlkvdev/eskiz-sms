@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from urllib.parse import urlparse
 
-from eskiz.exceptions import ValidationError
+from eskiz.exceptions import EskizValidationError
 
 
 def validate_callback_url(url: str) -> str:
     """Return ``url`` if it parses as a valid http(s) URL; raise otherwise."""
     parsed = urlparse(url)
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise ValidationError(f"Invalid callback URL: {url!r}")
+        raise EskizValidationError(f"Invalid callback URL: {url!r}")
     return url
 
 

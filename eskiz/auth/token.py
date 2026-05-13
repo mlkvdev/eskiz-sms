@@ -16,6 +16,7 @@ unguarded so queued callers don't wait under a held lock.
 from __future__ import annotations
 
 import asyncio
+import logging
 import threading
 from collections.abc import Awaitable, Callable
 from concurrent.futures import Future
@@ -36,7 +37,16 @@ AsyncRefreshFn = Callable[[str], Awaitable[str]]
 class SyncTokenManager:
     """Thread-safe token manager with single-flight refresh."""
 
-    __slots__ = ("_email", "_in_flight", "_lock", "_login", "_password", "_refresh", "_storage")
+    __slots__ = (
+        "_email",
+        "_in_flight",
+        "_lock",
+        "_log",
+        "_login",
+        "_password",
+        "_refresh",
+        "_storage",
+    )
 
     def __init__(
         self,
@@ -45,12 +55,14 @@ class SyncTokenManager:
         storage: TokenStorage,
         login_fn: SyncLoginFn,
         refresh_fn: SyncRefreshFn,
+        logger: logging.Logger,
     ) -> None:
         self._email = email
         self._password = password
         self._storage = storage
         self._login = login_fn
         self._refresh = refresh_fn
+        self._log = logger
         self._lock = threading.Lock()
         self._in_flight: Future[str] | None = None
 
@@ -70,6 +82,7 @@ class SyncTokenManager:
         self._storage.clear()
 
     def _do_login(self) -> str:
+        self._log.info("eskiz auth: logging in (email=%s)", self._email)
         token = self._login(self._email, self._password)
         self._storage.set(token)
         return token
@@ -83,6 +96,7 @@ class SyncTokenManager:
         try:
             token = self._refresh(failed_token)
         except AuthError:
+            self._log.warning("eskiz auth: refresh rejected, falling back to login")
             token = self._login(self._email, self._password)
         self._storage.set(token)
         return token
@@ -117,7 +131,16 @@ class SyncTokenManager:
 class AsyncTokenManager:
     """Task-safe token manager with single-flight refresh."""
 
-    __slots__ = ("_email", "_in_flight", "_lock", "_login", "_password", "_refresh", "_storage")
+    __slots__ = (
+        "_email",
+        "_in_flight",
+        "_lock",
+        "_log",
+        "_login",
+        "_password",
+        "_refresh",
+        "_storage",
+    )
 
     def __init__(
         self,
@@ -126,17 +149,22 @@ class AsyncTokenManager:
         storage: TokenStorage,
         login_fn: AsyncLoginFn,
         refresh_fn: AsyncRefreshFn,
+        logger: logging.Logger,
     ) -> None:
         self._email = email
         self._password = password
         self._storage = storage
         self._login = login_fn
         self._refresh = refresh_fn
+        self._log = logger
         # Lazy because the manager may be constructed outside an event loop.
         self._lock: asyncio.Lock | None = None
         self._in_flight: asyncio.Future[str] | None = None
 
     def _ensure_lock(self) -> asyncio.Lock:
+        # Safe without locking: there is no ``await`` between the read and
+        # the assignment, so the asyncio scheduler cannot interleave another
+        # coroutine here on a single event loop.
         if self._lock is None:
             self._lock = asyncio.Lock()
         return self._lock
@@ -157,6 +185,7 @@ class AsyncTokenManager:
         self._storage.clear()
 
     async def _do_login(self) -> str:
+        self._log.info("eskiz auth: logging in (email=%s)", self._email)
         token = await self._login(self._email, self._password)
         self._storage.set(token)
         return token
@@ -168,6 +197,7 @@ class AsyncTokenManager:
         try:
             token = await self._refresh(failed_token)
         except AuthError:
+            self._log.warning("eskiz auth: refresh rejected, falling back to login")
             token = await self._login(self._email, self._password)
         self._storage.set(token)
         return token

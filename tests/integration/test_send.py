@@ -17,7 +17,7 @@ import time
 import pytest
 
 from eskiz import EskizSMS
-from eskiz.exceptions import BadRequest
+from eskiz.exceptions import EskizBadRequest
 from eskiz.models import SendResult, SmsStatusDetail
 
 pytestmark = pytest.mark.integration
@@ -35,7 +35,7 @@ def test_send_and_status_roundtrip(live_client: EskizSMS, test_phone: str) -> No
             message=body,
             from_whom=TEST_FROM,
         )
-    except BadRequest as exc:
+    except EskizBadRequest as exc:
         if "модерац" in str(exc).lower() or "moderation" in str(exc).lower():
             pytest.skip(
                 f"Body {body!r} is not pre-approved on this account; "

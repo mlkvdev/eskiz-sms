@@ -8,7 +8,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict
 
 
-class _Base(BaseModel):
+class BaseEskizModel(BaseModel):
     """Base model — ignore unknown fields, populate by name or alias."""
 
     model_config = ConfigDict(
@@ -26,9 +26,9 @@ class EnvelopeStatus(StrEnum):
     WAITING = "waiting"
 
 
-class ResponseEnvelope(_Base):
+class ResponseEnvelope(BaseEskizModel):
     """The standard ``{status, message, data}`` wrapper Eskiz returns."""
 
-    status: EnvelopeStatus | str | None = None
+    status: EnvelopeStatus | None = None
     message: str | None = None
     data: Any = None

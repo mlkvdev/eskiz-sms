@@ -8,10 +8,10 @@ from typing import Any
 from pydantic import Field, field_validator
 
 from eskiz._validators import normalize_phone
-from eskiz.models.common import _Base
+from eskiz.models.common import BaseEskizModel
 
 
-class SendResult(_Base):
+class SendResult(BaseEskizModel):
     """Result of single-recipient or international send.
 
     Eskiz returns the body bare (no envelope) with ``id``, ``message``, ``status``.
@@ -23,7 +23,7 @@ class SendResult(_Base):
     status: str | None = None
 
 
-class BatchMessage(_Base):
+class BatchMessage(BaseEskizModel):
     """One entry in a batch send request."""
 
     user_sms_id: str = Field(..., description="Caller-supplied unique id for tracking.")
@@ -36,7 +36,7 @@ class BatchMessage(_Base):
         return normalize_phone(str(value))
 
 
-class BatchSendResult(_Base):
+class BatchSendResult(BaseEskizModel):
     """Result of a batch send."""
 
     id: str | int | None = None
@@ -44,14 +44,14 @@ class BatchSendResult(_Base):
     status: list[str] | None = None
 
 
-class DispatchStatusRow(_Base):
+class DispatchStatusRow(BaseEskizModel):
     """One bucket in the dispatch-status aggregation."""
 
     status: str
     total: int
 
 
-class PaginatedMessages(_Base):
+class PaginatedMessages(BaseEskizModel):
     """Paginated list returned by ``/message/sms/get-user-messages``."""
 
     current_page: int | None = None
@@ -71,7 +71,7 @@ class PaginatedMessages(_Base):
     result: list[dict[str, Any]] | str | None = None
 
 
-class NormalizerCharacter(_Base):
+class NormalizerCharacter(BaseEskizModel):
     """One special character flagged by ``/message/sms/normalizer``."""
 
     position: int
@@ -79,7 +79,7 @@ class NormalizerCharacter(_Base):
     char: str
 
 
-class SmsCheckInfo(_Base):
+class SmsCheckInfo(BaseEskizModel):
     """One SMSC entry in the SMS check response."""
 
     smsc: int
@@ -89,14 +89,14 @@ class SmsCheckInfo(_Base):
     error: str = ""
 
 
-class SmsCheckResult(_Base):
+class SmsCheckResult(BaseEskizModel):
     """``/message/sms/check`` response payload."""
 
     user_id: int | None = None
     info: list[SmsCheckInfo]
 
 
-class SmsLogEntry(_Base):
+class SmsLogEntry(BaseEskizModel):
     """One entry in ``/logs/sms/{id}`` system logs."""
 
     ip: str | None = None
@@ -110,13 +110,13 @@ class SmsLogEntry(_Base):
     level_name: str | None = None
 
 
-class SmsLogResponse(_Base):
+class SmsLogResponse(BaseEskizModel):
     """Wrapper for system logs."""
 
     messages: list[SmsLogEntry]
 
 
-class SmsStatusDetail(_Base):
+class SmsStatusDetail(BaseEskizModel):
     """Detailed per-message status from ``/message/sms/status_by_id/{id}``.
 
     The Eskiz response is rich; we keep typed fields for the common ones and
