@@ -8,7 +8,7 @@ Sync and async clients, full type hints, Pydantic v2 models.
 
 Discussion group: https://t.me/+xFkMROBeFp45ZmQ0
 
-> **v1.0.0 is a ground-up rewrite.** The import path and public API changed.
+> **v1.0 is a ground-up rewrite.** The import path and public API changed.
 > See [Migrating from v0.x](#migrating-from-v0x) below. v0.x is preserved on
 > the `master` branch.
 
